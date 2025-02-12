@@ -8,6 +8,10 @@ import ScanBarCodesScreen from '../screens/ScanBarCodesScreen';
 import GenerateQRCodesScreen from '../screens/GenerateQRCodesScreen';
 import GenerateBarCodesScreen from '../screens/GenerateBarCodesScreen';
 import ScanQRCodesScreen from '../screens/ScanQRCodesScreen';
+import GenerateWifiCode from '../screens/GenerateQRScreens/GenerateWifiCode';
+import QrcodeForMap from '../screens/GenerateQRScreens/QrcodeForMap';
+import QRCodeForAudio from '../screens/GenerateQRScreens/QRcodeForAUdio';
+import QRcodeForWhatsApp from '../screens/GenerateQRScreens/QRcodeForWhatsApp';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -38,6 +42,26 @@ const AppNavigation = () => {
         <Stack.Screen
           name="ScanBarCodesScreen"
           component={ScanBarCodesScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="GenWifiQrCode"
+          component={GenerateWifiCode}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="QRcodeForMap"
+          component={QrcodeForMap}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="QRCodeForAudio"
+          component={QRCodeForAudio}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="QRcodeForWhatsApp"
+          component={QRcodeForWhatsApp}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

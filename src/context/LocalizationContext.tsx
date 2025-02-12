@@ -6,9 +6,8 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-
-import {storage} from './storage';
 import i18n, {ContentLanguage} from '../i18n';
+import {storage} from './storage';
 import {StorageKeys} from '../constants/storageKeys';
 
 export type LocalizationAppContextType = {

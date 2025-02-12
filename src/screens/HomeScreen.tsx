@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import BarIcon from 'react-native-vector-icons/FontAwesome';
 import NavigationCard from '../components/homeComponents/NavigationCard';
 import {moderateScale, scaleWidth} from '../utils/dimensions';
-import { useLanguage } from '../context';
+import {useLanguage} from '../context';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
