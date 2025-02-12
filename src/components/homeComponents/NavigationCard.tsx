@@ -1,8 +1,30 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  GestureResponderEvent,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {moderateScale, scaleWidth, scaleHeight} from '../../utils/dimensions';
 
-const NavigationCard = ({onPress, icon, iconSize, iconColor, text}) => {
+interface NavigationCardProps {
+  onPress: (event: GestureResponderEvent) => void;
+  icon?: React.ReactElement;
+  iconSize?: number;
+  iconColor?: string;
+  text: string;
+}
+
+const NavigationCard: React.FC<NavigationCardProps> = ({
+  onPress,
+  icon,
+  iconSize,
+  iconColor,
+  text,
+}) => {
   const navigation = useNavigation();
 
   return (
@@ -18,25 +40,25 @@ const NavigationCard = ({onPress, icon, iconSize, iconColor, text}) => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
-    borderRadius: 12,
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+    borderRadius: moderateScale(12),
+    paddingVertical: moderateScale(15),
+    paddingHorizontal: moderateScale(20),
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
     shadowOpacity: 0.2,
-    shadowRadius: 10,
-    shadowOffset: {width: 0, height: 4},
+    shadowRadius: moderateScale(10),
+    shadowOffset: {width: 0, height: moderateScale(4)},
     elevation: 6,
-    width: '42%',
-    minHeight: '25%',
-    margin: 10,
+    width: scaleWidth(130),
+    minHeight: scaleHeight(25),
+    margin: moderateScale(10),
   },
   iconContainer: {
-    marginBottom: 12,
+    marginBottom: moderateScale(12),
   },
   cardText: {
-    fontSize: 14,
+    fontSize: moderateScale(14),
     fontWeight: '600',
     color: '#4A4A4A',
     textAlign: 'center',
