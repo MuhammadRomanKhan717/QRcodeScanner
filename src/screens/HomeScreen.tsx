@@ -4,9 +4,12 @@ import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import BarIcon from 'react-native-vector-icons/FontAwesome';
 import NavigationCard from '../components/homeComponents/NavigationCard';
+import {contents, useLanguage} from '../context';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const useLagange = useLanguage();
+  console.log('useLagange', useLagange);
 
   const cardsData = [
     {
@@ -55,7 +58,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>HomeScreen</Text>
+      <Text style={styles.title}>{contents('create')}</Text>
       <FlatList
         data={cardsData}
         numColumns={2}

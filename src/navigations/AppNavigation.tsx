@@ -3,8 +3,6 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 
 import {RootStackParamList} from './appNavigation.type';
-import BarCodeScreen from '../screens/GenerateBarCodesScreen';
-import QRCodeScreen from '../screens/GenerateQRCodesScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ScanBarCodesScreen from '../screens/ScanBarCodesScreen';
 import GenerateQRCodesScreen from '../screens/GenerateQRCodesScreen';
