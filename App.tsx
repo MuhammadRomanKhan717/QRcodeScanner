@@ -2,9 +2,14 @@
 
 import React from 'react';
 import AppNavigation from './src/navigations/AppNavigation';
+import {LocalizationProvider} from './src/context';
 
 const App = () => {
-  return <AppNavigation />;
+  return (
+    <LocalizationProvider>
+      <AppNavigation />
+    </LocalizationProvider>
+  );
 };
 
 export default App;
