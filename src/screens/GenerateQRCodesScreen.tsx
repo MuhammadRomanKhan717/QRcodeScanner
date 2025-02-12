@@ -1,14 +1,12 @@
+import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {View, Text, Button} from 'react-native';
+import QrCodeForWifiComp from '../components/generateQRCodesComponent/QrCodeForWifiComp';
 
-const GenerateQRCodesScreen = ({navigation}: any) => {
+const GenerateQRCodesScreen = () => {
   return (
-    <View>
-      <Text>QRCode Screen</Text>
-      <Button
-        title="Go to BarCode Screen"
-        onPress={() => navigation.navigate('BarCodeScreen')}
-      />
+    <View style={{flex: 1}}>
+      <Text>hello</Text>
+      <QrCodeForWifiComp />
     </View>
   );
 };

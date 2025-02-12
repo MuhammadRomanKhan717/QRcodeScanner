@@ -4,7 +4,8 @@ import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import BarIcon from 'react-native-vector-icons/FontAwesome';
 import NavigationCard from '../components/homeComponents/NavigationCard';
-import {contents, useLanguage} from '../context';
+import {moderateScale, scaleWidth} from '../utils/dimensions';
+import { useLanguage } from '../context';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -58,7 +59,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{contents('create')}</Text>
+      <Text style={styles.title}>well come</Text>
       <FlatList
         data={cardsData}
         numColumns={2}
@@ -78,15 +79,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
-    padding: 20,
   },
   title: {
-    fontSize: 30,
+    fontSize: moderateScale(30),
     fontWeight: 'bold',
-    marginBottom: 40,
+    marginBottom: moderateScale(30),
     color: '#333',
   },
   cardListContainer: {
-    width: '100%',
+    // width: scaleWidth(300),
+    // backgroundColor: 'red',
   },
 });
