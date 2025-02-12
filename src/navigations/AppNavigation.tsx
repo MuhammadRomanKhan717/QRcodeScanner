@@ -3,9 +3,13 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 
 import {RootStackParamList} from './appNavigation.type';
-import BarCodeScreen from '../screens/BarCodeScreen';
-import QRCodeScreen from '../screens/QRCodeScreen';
+import BarCodeScreen from '../screens/GenerateBarCodesScreen';
+import QRCodeScreen from '../screens/GenerateQRCodesScreen';
 import HomeScreen from '../screens/HomeScreen';
+import ScanBarCodesScreen from '../screens/ScanBarCodesScreen';
+import GenerateQRCodesScreen from '../screens/GenerateQRCodesScreen';
+import GenerateBarCodesScreen from '../screens/GenerateBarCodesScreen';
+import ScanQRCodesScreen from '../screens/ScanQRCodesScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -19,13 +23,23 @@ const AppNavigation = () => {
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="BarCodeScreen"
-          component={BarCodeScreen}
+          name="GenerateBarCodesScreen"
+          component={GenerateBarCodesScreen}
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="QRCodeScreen"
-          component={QRCodeScreen}
+          name="GenerateQRCodesScreen"
+          component={GenerateQRCodesScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ScanQRCodesScreen"
+          component={ScanQRCodesScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ScanBarCodesScreen"
+          component={ScanBarCodesScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

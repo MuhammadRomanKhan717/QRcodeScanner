@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, Button} from 'react-native';
 
-const QRCodeScreen = ({navigation}: any) => {
+const GenerateQRCodesScreen = ({navigation}: any) => {
   return (
     <View>
       <Text>QRCode Screen</Text>
@@ -13,4 +13,4 @@ const QRCodeScreen = ({navigation}: any) => {
   );
 };
 
-export default QRCodeScreen;
+export default GenerateQRCodesScreen;

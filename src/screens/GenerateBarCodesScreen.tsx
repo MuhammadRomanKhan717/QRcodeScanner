@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, Button} from 'react-native';
 
-const BarCodeScreen = ({navigation}: any) => {
+const GenerateBarCodesScreen = ({navigation}: any) => {
   return (
     <View>
       <Text>BarCode Screen</Text>
@@ -13,4 +13,4 @@ const BarCodeScreen = ({navigation}: any) => {
   );
 };
 
-export default BarCodeScreen;
+export default GenerateBarCodesScreen;
