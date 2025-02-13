@@ -9,6 +9,12 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {moderateScale, scaleWidth, scaleHeight} from '../../utils/dimensions';
+import Animated, {
+  FadeInDown,
+  FadeInUp,
+  SlideInLeft,
+  SlideInRight,
+} from 'react-native-reanimated';
 
 interface NavigationCardProps {
   onPress: (event: GestureResponderEvent) => void;
@@ -16,6 +22,7 @@ interface NavigationCardProps {
   iconSize?: number;
   iconColor?: string;
   text: string;
+  index: number;
 }
 
 const NavigationCard: React.FC<NavigationCardProps> = ({
@@ -24,16 +31,27 @@ const NavigationCard: React.FC<NavigationCardProps> = ({
   iconSize,
   iconColor,
   text,
+  index,
 }) => {
   const navigation = useNavigation();
+  const animationType =
+    index % 2 === 0 ? SlideInLeft.duration(500) : SlideInRight.duration(500);
 
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
-      <View style={styles.iconContainer}>
-        {icon && React.cloneElement(icon, {size: iconSize, color: iconColor})}
-      </View>
-      <Text style={styles.cardText}>{text}</Text>
-    </TouchableOpacity>
+    <Animated.View entering={animationType}>
+      <TouchableOpacity style={styles.card} onPress={onPress}>
+        <Animated.View
+          entering={FadeInUp.duration(500)}
+          style={styles.iconContainer}>
+          {icon && React.cloneElement(icon, {size: iconSize, color: iconColor})}
+        </Animated.View>
+        <Animated.Text
+          entering={FadeInDown.duration(500)}
+          style={styles.cardText}>
+          {text}
+        </Animated.Text>
+      </TouchableOpacity>
+    </Animated.View>
   );
 };
 
