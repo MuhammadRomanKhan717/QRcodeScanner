@@ -15,6 +15,7 @@ import Animated, {
   SlideInLeft,
   SlideInRight,
 } from 'react-native-reanimated';
+import {colors} from '../../utils/LightTheme';
 
 interface NavigationCardProps {
   onPress: (event: GestureResponderEvent) => void;
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
   cardText: {
     fontSize: moderateScale(14),
     fontWeight: '600',
-    color: '#4A4A4A',
+    color: colors.blackText,
     textAlign: 'center',
   },
 });

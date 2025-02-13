@@ -2,29 +2,35 @@ import React, {useState, useRef} from 'react';
 import {
   View,
   Text,
+  TextInput,
   TouchableOpacity,
   Alert,
   ActivityIndicator,
   PermissionsAndroid,
   Platform,
 } from 'react-native';
-import DocumentPicker from 'react-native-document-picker';
 import QRCode from 'react-native-qrcode-svg';
 import ViewShot from 'react-native-view-shot';
 import Share from 'react-native-share';
 import CameraRoll from '@react-native-camera-roll/camera-roll';
-import axios from 'axios';
+import {useRoute} from '@react-navigation/native';
 import {moderateScale} from '../../utils/dimensions';
 import {colors} from '../../utils/LightTheme';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const QRCodeForAudio = () => {
-  const [fileUri, setFileUri] = useState<string | null>(null);
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const viewShotRef = useRef(null);
+// Define the route params type
+type RouteParams = {
+  mode: string;
+};
 
-  // Request Storage Permission for Android
+const QRcodeForSocialMedia: React.FC = () => {
+  const route = useRoute();
+  const {mode} = route.params as RouteParams; // Get selected social media platform
+  const [link, setLink] = useState('');
+  const [loading, setLoading] = useState(false);
+  const viewShotRef = useRef<ViewShot | null>(null);
+
+  // Request storage permission (Android only)
   const requestStoragePermission = async () => {
     if (Platform.OS === 'android' && Platform.Version < 33) {
       try {
@@ -40,59 +46,7 @@ const QRCodeForAudio = () => {
     return true;
   };
 
-  // Pick File (Audio or PPTX)
-  const pickFile = async () => {
-    try {
-      const res = await DocumentPicker.pickSingle({
-        type: [DocumentPicker.types.allFiles],
-      });
-      console.log('File selected:', res);
-      setFileUri(res.uri);
-      uploadFileToGoFile(res);
-    } catch (err) {
-      if (DocumentPicker.isCancel(err)) {
-        Alert.alert('Cancelled', 'File selection was cancelled');
-      } else {
-        Alert.alert('Error', 'An error occurred while picking the file');
-        console.error(err);
-      }
-    }
-  };
-
-  // Upload File to GoFile.io
-  const uploadFileToGoFile = async file => {
-    setUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append('file', {
-        uri: file.uri,
-        name: file.name,
-        type: file.type,
-      });
-
-      const response = await axios.post(
-        'https://store1.gofile.io/uploadFile',
-        formData,
-        {
-          headers: {'Content-Type': 'multipart/form-data'},
-        },
-      );
-
-      if (response.data.status === 'ok') {
-        const fileUrl = response.data.data.downloadPage;
-        console.log('Uploaded successfully:', fileUrl);
-        setDownloadUrl(fileUrl);
-      } else {
-        throw new Error('Failed to upload file');
-      }
-    } catch (error) {
-      Alert.alert('Error', 'File upload failed.');
-      console.error(error);
-    }
-    setUploading(false);
-  };
-
-  // Capture QR Code Image
+  // Capture QR Code as an image
   const captureQR = async () => {
     try {
       if (!viewShotRef.current) {
@@ -115,8 +69,8 @@ const QRCodeForAudio = () => {
 
   // Share QR Code
   const shareQRCode = async () => {
-    if (!downloadUrl) {
-      Alert.alert('Error', 'Upload a file first to generate QR code.');
+    if (!link) {
+      Alert.alert('Error', 'Enter a valid link to generate the QR code.');
       return;
     }
 
@@ -137,8 +91,8 @@ const QRCodeForAudio = () => {
 
   // Download QR Code and Save to Gallery
   const downloadQRCode = async () => {
-    if (!downloadUrl) {
-      Alert.alert('Error', 'Upload a file first to generate QR code.');
+    if (!link) {
+      Alert.alert('Error', 'Enter a valid link to generate the QR code.');
       return;
     }
 
@@ -184,40 +138,44 @@ const QRCodeForAudio = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Audio & PPTX QR Code Generator</Text>
+      <Text style={styles.heading}>{mode} QR Code Generator</Text>
 
-      {/* Upload Button */}
-      <TouchableOpacity style={styles.uploadButton} onPress={pickFile}>
-        <Icon name="upload" size={20} color={colors.primary} />
-        <Text style={styles.uploadButtonText}>Upload File</Text>
-      </TouchableOpacity>
+      {/* Input for Social Media Link */}
+      <TextInput
+        style={styles.input}
+        placeholder={`Enter your ${mode} link`}
+        value={link}
+        onChangeText={setLink}
+      />
 
-      {uploading && <ActivityIndicator size="large" color={colors.primary} />}
+      {loading && <ActivityIndicator size="large" color={colors.primary} />}
 
-      {downloadUrl && (
+      {link ? (
         <View style={styles.qrContainer}>
           <ViewShot ref={viewShotRef} options={{format: 'png', quality: 1}}>
-            <QRCode value={downloadUrl} size={200} />
+            <QRCode value={link} size={200} />
           </ViewShot>
-          <Text style={styles.qrText}>Scan to download the file</Text>
+          <Text style={styles.qrText}>Scan to visit {mode}</Text>
 
-          {/* Share QR Code Button */}
-          <TouchableOpacity style={styles.button} onPress={shareQRCode}>
-            <Text style={styles.buttonText}>Share QR Code</Text>
-          </TouchableOpacity>
+          {/* Buttons for Download & Share */}
+          <View style={styles.row}>
+            <TouchableOpacity style={styles.button} onPress={downloadQRCode}>
+              <Text style={styles.buttonText}>Download QR</Text>
+            </TouchableOpacity>
 
-          {/* Download QR Code Button */}
-          <TouchableOpacity style={styles.button} onPress={downloadQRCode}>
-            <Text style={styles.buttonText}>Download QR Code</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={shareQRCode}>
+              <Text style={styles.buttonText}>Share QR</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      )}
+      ) : null}
     </View>
   );
 };
 
-export default QRCodeForAudio;
+export default QRcodeForSocialMedia;
 
+// Styles
 const styles = {
   container: {
     flex: 1,
@@ -232,22 +190,13 @@ const styles = {
     color: colors.blackText,
     marginBottom: moderateScale(20),
   },
-  uploadButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.lightPurple,
-    padding: moderateScale(15),
-    borderRadius: moderateScale(10),
-    borderWidth: 1,
-    borderColor: colors.primary,
+  input: {
     width: '100%',
-    justifyContent: 'center',
-  },
-  uploadButtonText: {
-    color: colors.primary,
-    fontSize: moderateScale(16),
-    fontWeight: 'bold',
-    marginLeft: moderateScale(10),
+    padding: moderateScale(10),
+    borderWidth: 1,
+    borderColor: colors.grey500,
+    borderRadius: moderateScale(10),
+    marginBottom: moderateScale(15),
   },
   qrContainer: {
     marginTop: moderateScale(15),
@@ -258,13 +207,19 @@ const styles = {
     fontSize: moderateScale(14),
     color: colors.grey800,
   },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: moderateScale(15),
+  },
   button: {
-    backgroundColor: colors.primary,
+    flex: 1,
     paddingVertical: moderateScale(15),
     borderRadius: moderateScale(10),
-    width: '100%',
+    backgroundColor: colors.primary,
     alignItems: 'center',
-    marginTop: moderateScale(15),
+    marginHorizontal: moderateScale(5),
   },
   buttonText: {
     color: colors.black,
