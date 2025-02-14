@@ -1,4 +1,7 @@
 import React from 'react';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Octicons from 'react-native-vector-icons/Octicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {View, FlatList, TouchableOpacity, Text} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
@@ -20,6 +23,7 @@ type RootStackParamList = {
   QRcodeForEmail: undefined;
   QRcodeForMap: undefined;
   QRcodeForSocialMedia: undefined;
+  QRCodeForVCard: undefined;
 };
 
 // Define the type for the navigation prop
@@ -66,52 +70,143 @@ const data: QRCodeItem[] = [
   },
   {
     id: '6',
-    name: 'PPTX',
-    icon: 'presentation-play',
-    screen: 'QRcodeForSocialMedia',
-    mode: 'PPTX',
+    name: 'vCard',
+    icon: 'card-account-details-outline',
+    screen: 'QRCodeForVCard',
+    mode: 'vCard',
   },
   {
     id: '7',
+    name: 'PPTX',
+    icon: 'presentation-play',
+    screen: 'QRCodeForAudio',
+    mode: 'PPTX',
+  },
+  {
+    id: '8',
     name: 'Facebook',
     icon: 'facebook',
     screen: 'QRcodeForSocialMedia',
     mode: 'facebook',
   },
   {
-    id: '8',
+    id: '9',
     name: 'Instagram',
     icon: 'instagram',
     screen: 'QRcodeForSocialMedia',
     mode: 'instagram',
   },
   {
-    id: '9',
+    id: '10',
     name: 'Twitter',
     icon: 'twitter',
     screen: 'QRcodeForSocialMedia',
     mode: 'twitter',
   },
   {
-    id: '10',
+    id: '11',
     name: 'LinkedIn',
     icon: 'linkedin',
     screen: 'QRcodeForSocialMedia',
     mode: 'linkedIn',
   },
   {
-    id: '11',
+    id: '12',
     name: 'YouTube',
     icon: 'youtube',
     screen: 'QRcodeForSocialMedia',
     mode: 'youTube',
   },
   {
-    id: '12',
+    id: '13',
     name: 'Telegram',
     icon: 'telegram',
     screen: 'QRcodeForSocialMedia',
     mode: 'telegram',
+  },
+  {
+    id: '14',
+    name: 'TikTok',
+    icon: 'tiktok',
+    screen: 'QRcodeForSocialMedia',
+    mode: 'tiktok',
+  },
+  {
+    id: '15',
+    name: 'Video',
+    icon: 'video',
+    screen: 'QRcodeForSocialMedia',
+    mode: 'video',
+  },
+  {
+    id: '16',
+    name: 'Google Forms',
+    icon: 'file-document-outline',
+    screen: 'QRcodeForSocialMedia',
+    mode: 'googleForms',
+  },
+  {
+    id: '17',
+    name: 'Snapchat',
+    icon: 'snapchat',
+    screen: 'QRcodeForSocialMedia',
+    mode: 'snapchat',
+  },
+  {
+    id: '18',
+    name: 'Spotify',
+    icon: 'spotify',
+    screen: 'QRcodeForSocialMedia',
+    mode: 'spotify',
+  },
+  {
+    id: '19',
+    name: 'Google Docs',
+    icon: 'file-document-outline',
+    screen: 'QRcodeForSocialMedia',
+    mode: 'googleDoc',
+  },
+  {
+    id: '20',
+    name: 'Google Review',
+    icon: 'star-outline',
+    screen: 'QRcodeForSocialMedia',
+    mode: 'googleReview',
+  },
+  {
+    id: '21',
+    name: 'Payment',
+    icon: 'credit-card-outline',
+    screen: 'QRcodeForSocialMedia',
+    mode: 'payment',
+  },
+  {
+    id: '22',
+    name: 'Logo',
+    icon: 'image-outline',
+    screen: 'QRcodeForSocialMedia',
+    mode: 'logo',
+  },
+  {
+    id: '23',
+    name: 'Office365',
+    icon: 'microsoft-office',
+    screen: 'QRcodeForSocialMedia',
+    mode: 'office',
+  },
+  {
+    id: '24',
+    name: 'Paypal',
+    icon: 'paypal',
+    screen: 'QRcodeForSocialMedia',
+    mode: 'paypal',
+  },
+  {
+    id: '25',
+    name: 'Etsy',
+    icon: 'etsy',
+    screen: 'QRcodeForSocialMedia',
+    mode: 'etsy',
   },
 ];
 
@@ -121,6 +216,7 @@ const getIconComponent = (iconName: string) => {
   const materialIcons = [
     'map-marker-outline',
     'wifi',
+    'tiktok',
     'music-note-outline',
     'whatsapp',
     'message-text-outline',
@@ -128,17 +224,34 @@ const getIconComponent = (iconName: string) => {
     'instagram',
     'linkedin',
     'youtube',
+    'credit-card-outline',
+    'microsoft-office',
+    'star-outline',
+    'file-document-outline',
+    'image-outline',
+    'snapchat',
+    'spotify',
+    'paypal',
+    'etsy',
+    'card-account-details-outline',
   ];
-
-  if (fontistoIcons.includes(iconName)) {
+  if (iconName === 'paypal') {
+    return <FontAwesome name="paypal" size={24} color="#4CAF50" />;
+  } else if (iconName === 'etsy') {
+    return <FontAwesome name="etsy" size={24} color="#4CAF50" />;
+  } else if (iconName === 'video') {
+    return <Octicons name="video" size={24} color="#4CAF50" />;
+  } else if (iconName === 'tiktok') {
+    return <MaterialIcons name="tiktok" size={24} color="#4CAF50" />;
+  } else if (fontistoIcons.includes(iconName)) {
     return <Fontisto name={iconName} size={24} color="#4CAF50" />;
   } else if (materialIcons.includes(iconName)) {
     return <Icon name={iconName} size={24} color="#4CAF50" />;
+  } else {
+    console.warn(`Icon "${iconName}" not found!`);
+    return <Icon name="help-circle" size={24} color="red" />;
   }
-
-  return <Icon name="help-circle" size={24} color="red" />; // Fallback icon if no match
 };
-
 const GenerateQRCodesScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
 
@@ -173,6 +286,7 @@ const GenerateQRCodesScreen: React.FC = () => {
         keyExtractor={item => item.id}
         numColumns={2}
         columnWrapperStyle={styles.row}
+        scrollIndicatorInsets={false}
       />
     </View>
   );

@@ -14,6 +14,7 @@ import QRCodeForAudio from '../screens/GenerateQRScreens/QRcodeForAUdio';
 import QRcodeForWhatsApp from '../screens/GenerateQRScreens/QRcodeForWhatsApp';
 import QRcodeForEmail from '../screens/GenerateQRScreens/QRcodeForEmail';
 import QRcodeForSocialMedia from '../screens/GenerateQRScreens/QRcodeForSocialMedia';
+import QRCodeForVCard from '../screens/GenerateQRScreens/QRCodeForVCard';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -74,6 +75,11 @@ const AppNavigation = () => {
         <Stack.Screen
           name="QRcodeForSocialMedia"
           component={QRcodeForSocialMedia}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="QRCodeForVCard"
+          component={QRCodeForVCard}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

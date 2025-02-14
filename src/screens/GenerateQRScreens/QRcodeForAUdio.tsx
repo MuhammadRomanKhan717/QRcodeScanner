@@ -2,45 +2,33 @@ import React, {useState, useRef} from 'react';
 import {
   View,
   Text,
+  TextInput,
   TouchableOpacity,
   Alert,
   ActivityIndicator,
   PermissionsAndroid,
   Platform,
 } from 'react-native';
+import {useRoute} from '@react-navigation/native';
 import DocumentPicker from 'react-native-document-picker';
 import QRCode from 'react-native-qrcode-svg';
 import ViewShot from 'react-native-view-shot';
 import Share from 'react-native-share';
 import CameraRoll from '@react-native-camera-roll/camera-roll';
 import axios from 'axios';
-import {moderateScale} from '../../utils/dimensions';
+import {moderateScale, scaleHeight} from '../../utils/dimensions';
 import {colors} from '../../utils/LightTheme';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const QRCodeForAudio = () => {
+  const route = useRoute();
+  const mode = route?.params?.mode;
   const [fileUri, setFileUri] = useState<string | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [qrName, setQrName] = useState('');
   const viewShotRef = useRef(null);
 
-  // Request Storage Permission for Android
-  const requestStoragePermission = async () => {
-    if (Platform.OS === 'android' && Platform.Version < 33) {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        );
-        return granted === PermissionsAndroid.RESULTS.GRANTED;
-      } catch (err) {
-        console.warn('Permission request error:', err);
-        return false;
-      }
-    }
-    return true;
-  };
-
-  // Pick File (Audio or PPTX)
   const pickFile = async () => {
     try {
       const res = await DocumentPicker.pickSingle({
@@ -59,7 +47,6 @@ const QRCodeForAudio = () => {
     }
   };
 
-  // Upload File to GoFile.io
   const uploadFileToGoFile = async file => {
     setUploading(true);
     try {
@@ -73,9 +60,7 @@ const QRCodeForAudio = () => {
       const response = await axios.post(
         'https://store1.gofile.io/uploadFile',
         formData,
-        {
-          headers: {'Content-Type': 'multipart/form-data'},
-        },
+        {headers: {'Content-Type': 'multipart/form-data'}},
       );
 
       if (response.data.status === 'ok') {
@@ -92,28 +77,6 @@ const QRCodeForAudio = () => {
     setUploading(false);
   };
 
-  // Capture QR Code Image
-  const captureQR = async () => {
-    try {
-      if (!viewShotRef.current) {
-        throw new Error('QR Code ViewShot reference is null.');
-      }
-
-      const uri = await viewShotRef.current.capture();
-      if (!uri) {
-        throw new Error('Failed to capture QR Code.');
-      }
-
-      console.log('QR Code captured successfully:', uri);
-      return uri;
-    } catch (error) {
-      console.error('Capture Error:', error);
-      Alert.alert('Error', 'Failed to capture QR Code.');
-      return null;
-    }
-  };
-
-  // Share QR Code
   const shareQRCode = async () => {
     if (!downloadUrl) {
       Alert.alert('Error', 'Upload a file first to generate QR code.');
@@ -121,7 +84,7 @@ const QRCodeForAudio = () => {
     }
 
     try {
-      const uri = await captureQR();
+      const uri = await viewShotRef.current.capture();
       if (!uri) return;
 
       const options = {
@@ -135,58 +98,20 @@ const QRCodeForAudio = () => {
     }
   };
 
-  // Download QR Code and Save to Gallery
-  const downloadQRCode = async () => {
-    if (!downloadUrl) {
-      Alert.alert('Error', 'Upload a file first to generate QR code.');
-      return;
-    }
-
-    try {
-      console.log('Starting QR Code download process...');
-
-      // Capture QR code image
-      const uri = await captureQR();
-      if (!uri) {
-        throw new Error('Failed to capture QR Code image.');
-      }
-
-      console.log('Captured QR Code URI:', uri);
-
-      // Request storage permission (Android only)
-      if (Platform.OS === 'android' && Platform.Version < 33) {
-        const hasPermission = await requestStoragePermission();
-        if (!hasPermission) {
-          Alert.alert(
-            'Permission Denied',
-            'Cannot save QR Code without storage permission.',
-          );
-          return;
-        }
-      }
-
-      // Convert local file path format
-      const fileUri = uri.startsWith('file://') ? uri : `file://${uri}`;
-
-      console.log('Saving QR Code to gallery...');
-
-      // Save image to gallery
-      const savedUri = await CameraRoll.save(fileUri, {type: 'photo'});
-
-      console.log('QR Code saved successfully:', savedUri);
-
-      Alert.alert('Success', 'QR Code saved to Gallery!');
-    } catch (error) {
-      console.error('Error saving QR Code:', error);
-      Alert.alert('Error', 'Failed to save QR Code.');
-    }
-  };
-
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Audio & PPTX QR Code Generator</Text>
+      <Text style={styles.heading}>
+        {' '}
+        {mode === 'Audio' ? 'AudioQR Code Generator' : 'PPTX QR Code Generator'}
+      </Text>
 
-      {/* Upload Button */}
+      <TextInput
+        style={styles.input}
+        placeholder="Name your QR (optional)"
+        value={qrName}
+        onChangeText={setQrName}
+      />
+
       <TouchableOpacity style={styles.uploadButton} onPress={pickFile}>
         <Icon name="upload" size={20} color={colors.primary} />
         <Text style={styles.uploadButtonText}>Upload File</Text>
@@ -201,13 +126,11 @@ const QRCodeForAudio = () => {
           </ViewShot>
           <Text style={styles.qrText}>Scan to download the file</Text>
 
-          {/* Share QR Code Button */}
           <TouchableOpacity style={styles.button} onPress={shareQRCode}>
             <Text style={styles.buttonText}>Share QR Code</Text>
           </TouchableOpacity>
 
-          {/* Download QR Code Button */}
-          <TouchableOpacity style={styles.button} onPress={downloadQRCode}>
+          <TouchableOpacity style={styles.button} onPress={() => {}}>
             <Text style={styles.buttonText}>Download QR Code</Text>
           </TouchableOpacity>
         </View>
@@ -232,22 +155,27 @@ const styles = {
     color: colors.blackText,
     marginBottom: moderateScale(20),
   },
-  uploadButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.lightPurple,
-    padding: moderateScale(15),
-    borderRadius: moderateScale(10),
-    borderWidth: 1,
-    borderColor: colors.primary,
+  input: {
     width: '100%',
-    justifyContent: 'center',
+    height: scaleHeight(50),
+    backgroundColor: colors.white,
+    borderRadius: moderateScale(10),
+    paddingHorizontal: moderateScale(15),
+    marginBottom: moderateScale(15),
+    elevation: 4,
+  },
+  uploadButton: {
+    backgroundColor: colors.highlightSelected,
+    paddingVertical: moderateScale(5),
+    borderRadius: moderateScale(10),
+    width: '100%',
+    alignItems: 'center',
+    elevation: 6,
   },
   uploadButtonText: {
-    color: colors.primary,
+    color: colors.whiteText,
     fontSize: moderateScale(16),
     fontWeight: 'bold',
-    marginLeft: moderateScale(10),
   },
   qrContainer: {
     marginTop: moderateScale(15),
@@ -259,15 +187,16 @@ const styles = {
     color: colors.grey800,
   },
   button: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.highlightSelected,
     paddingVertical: moderateScale(15),
     borderRadius: moderateScale(10),
-    width: '100%',
+    width: moderateScale(320),
     alignItems: 'center',
+    elevation: 6,
     marginTop: moderateScale(15),
   },
   buttonText: {
-    color: colors.black,
+    color: colors.whiteText,
     fontSize: moderateScale(16),
     fontWeight: 'bold',
   },
