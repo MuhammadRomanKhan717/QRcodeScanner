@@ -19,8 +19,10 @@ import axios from 'axios';
 import {moderateScale, scaleHeight} from '../../utils/dimensions';
 import {colors} from '../../utils/LightTheme';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import Header from '../../components/commonComponents/Header';
+import {useNavigation} from '@react-navigation/native';
 const QRCodeForAudio = () => {
+  const navigation = useNavigation();
   const route = useRoute();
   const mode = route?.params?.mode;
   const [fileUri, setFileUri] = useState<string | null>(null);
@@ -100,9 +102,22 @@ const QRCodeForAudio = () => {
 
   return (
     <View style={styles.container}>
+      <Header
+        title={
+          mode === 'Audio'
+            ? 'Generate QR code for audio'
+            : 'Generate QR code for PPTX'
+        }
+        onBackPress={() => navigation.goBack()}
+        onBackLongPress={() =>
+          Alert.alert('Long Press', 'You held the back button!')
+        }
+        rightComponent={null}
+      />
       <Text style={styles.heading}>
-        {' '}
-        {mode === 'Audio' ? 'AudioQR Code Generator' : 'PPTX QR Code Generator'}
+        {mode === 'Audio'
+          ? 'Audio QR Code Generator'
+          : 'PPTX QR Code Generator'}
       </Text>
 
       <TextInput

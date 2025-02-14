@@ -39,6 +39,7 @@ interface QRCodeItem {
 }
 
 const data: QRCodeItem[] = [
+  // QRcodeForMap
   {
     id: '1',
     name: 'Map',
@@ -46,7 +47,11 @@ const data: QRCodeItem[] = [
     screen: 'QRcodeForMap',
     mode: '',
   },
+
+  // GenWifiQrCode
   {id: '2', name: 'Wi-Fi', icon: 'wifi', screen: 'GenWifiQrCode', mode: ''},
+
+  // QRCodeForAudio
   {
     id: '3',
     name: 'Audio',
@@ -54,6 +59,22 @@ const data: QRCodeItem[] = [
     screen: 'QRCodeForAudio',
     mode: 'Audio',
   },
+  {
+    id: '7',
+    name: 'PPTX',
+    icon: 'presentation-play',
+    screen: 'QRCodeForAudio',
+    mode: 'PPTX',
+  },
+  {
+    id: '26',
+    name: 'File',
+    icon: 'file-2',
+    screen: 'QRCodeForAudio',
+    mode: 'file',
+  },
+
+  // QRcodeForWhatsApp
   {
     id: '4',
     name: 'WhatsApp',
@@ -68,6 +89,8 @@ const data: QRCodeItem[] = [
     screen: 'QRcodeForWhatsApp',
     mode: 'sms',
   },
+
+  // QRCodeForVCard
   {
     id: '6',
     name: 'vCard',
@@ -75,13 +98,8 @@ const data: QRCodeItem[] = [
     screen: 'QRCodeForVCard',
     mode: 'vCard',
   },
-  {
-    id: '7',
-    name: 'PPTX',
-    icon: 'presentation-play',
-    screen: 'QRCodeForAudio',
-    mode: 'PPTX',
-  },
+
+  // QRcodeForSocialMedia
   {
     id: '8',
     name: 'Facebook',
@@ -212,7 +230,7 @@ const data: QRCodeItem[] = [
 
 // Function to dynamically select the correct icon component
 const getIconComponent = (iconName: string) => {
-  const fontistoIcons = ['telegram', 'facebook', 'twitter'];
+  const fontistoIcons = ['telegram', 'facebook', 'twitter', 'file-2'];
   const materialIcons = [
     'map-marker-outline',
     'wifi',
@@ -286,7 +304,7 @@ const GenerateQRCodesScreen: React.FC = () => {
         keyExtractor={item => item.id}
         numColumns={2}
         columnWrapperStyle={styles.row}
-        scrollIndicatorInsets={false}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
