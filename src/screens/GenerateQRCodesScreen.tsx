@@ -68,6 +68,13 @@ const data: QRCodeItem[] = [
   },
   {
     id: '26',
+    name: 'Excel',
+    icon: 'microsoft-excel',
+    screen: 'QRCodeForAudio',
+    mode: 'excel',
+  },
+  {
+    id: '27',
     name: 'File',
     icon: 'file-2',
     screen: 'QRCodeForAudio',
@@ -252,6 +259,7 @@ const getIconComponent = (iconName: string) => {
     'paypal',
     'etsy',
     'card-account-details-outline',
+    'microsoft-excel',
   ];
   if (iconName === 'paypal') {
     return <FontAwesome name="paypal" size={24} color="#4CAF50" />;
