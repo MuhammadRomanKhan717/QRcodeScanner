@@ -3,6 +3,7 @@ import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import BarIcon from 'react-native-vector-icons/FontAwesome';
+import ScanBar from 'react-native-vector-icons/MaterialCommunityIcons';
 import NavigationCard from '../components/homeComponents/NavigationCard';
 import {moderateScale, scaleWidth} from '../utils/dimensions';
 import {useLanguage} from '../context';
@@ -32,7 +33,7 @@ const HomeScreen = () => {
     {
       id: '3',
       screen: 'ScanQRCodesScreen',
-      icon: <Icon name="camera-alt" />,
+      icon: <ScanBar name="qrcode-scan" />,
       iconSize: 50,
       iconColor: '#FF9800',
       text: 'Scan QR Codes',
@@ -40,7 +41,7 @@ const HomeScreen = () => {
     {
       id: '4',
       screen: 'ScanBarCodesScreen',
-      icon: <Icon name="camera-enhance" />,
+      icon: <ScanBar name="barcode-scan" />,
       iconSize: 50,
       iconColor: '#FF5722',
       text: 'Scan Bar Codes',
