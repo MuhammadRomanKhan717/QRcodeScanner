@@ -13,6 +13,7 @@ import Animated, {
   FadeIn,
 } from 'react-native-reanimated';
 import {moderateScale, scaleHeight, scaleWidth} from '../utils/dimensions';
+import {contents} from '../context';
 
 // Define the type for navigation
 type RootStackParamList = {
@@ -39,196 +40,191 @@ interface QRCodeItem {
 }
 
 const data: QRCodeItem[] = [
-  // QRcodeForMap
   {
     id: '1',
-    name: 'Map',
+    name: contents('map'),
     icon: 'map-marker-outline',
     screen: 'QRcodeForMap',
     mode: '',
   },
-
-  // GenWifiQrCode
-  {id: '2', name: 'Wi-Fi', icon: 'wifi', screen: 'GenWifiQrCode', mode: ''},
-
-  // QRCodeForAudio
+  {
+    id: '2',
+    name: contents('wifi'),
+    icon: 'wifi',
+    screen: 'GenWifiQrCode',
+    mode: '',
+  },
   {
     id: '3',
-    name: 'Audio',
+    name: contents('audio'),
     icon: 'music-note-outline',
     screen: 'QRCodeForAudio',
     mode: 'Audio',
   },
   {
     id: '7',
-    name: 'PPTX',
+    name: contents('pptx'),
     icon: 'presentation-play',
     screen: 'QRCodeForAudio',
     mode: 'PPTX',
   },
   {
     id: '26',
-    name: 'Excel',
+    name: contents('excel'),
     icon: 'microsoft-excel',
     screen: 'QRCodeForAudio',
     mode: 'excel',
   },
   {
     id: '27',
-    name: 'File',
+    name: contents('file'),
     icon: 'file-2',
     screen: 'QRCodeForAudio',
     mode: 'file',
   },
-
-  // QRcodeForWhatsApp
   {
     id: '4',
-    name: 'WhatsApp',
+    name: contents('whatsapp'),
     icon: 'whatsapp',
     screen: 'QRcodeForWhatsApp',
     mode: 'whatsapp',
   },
   {
     id: '5',
-    name: 'Message',
+    name: contents('message'),
     icon: 'message-text-outline',
     screen: 'QRcodeForWhatsApp',
     mode: 'sms',
   },
-
-  // QRCodeForVCard
   {
     id: '6',
-    name: 'vCard',
+    name: contents('vCard'),
     icon: 'card-account-details-outline',
     screen: 'QRCodeForVCard',
     mode: 'vCard',
   },
-
-  // QRcodeForSocialMedia
   {
     id: '8',
-    name: 'Facebook',
+    name: contents('facebook'),
     icon: 'facebook',
     screen: 'QRcodeForSocialMedia',
     mode: 'facebook',
   },
   {
     id: '9',
-    name: 'Instagram',
+    name: contents('instagram'),
     icon: 'instagram',
     screen: 'QRcodeForSocialMedia',
     mode: 'instagram',
   },
   {
     id: '10',
-    name: 'Twitter',
+    name: contents('twitter'),
     icon: 'twitter',
     screen: 'QRcodeForSocialMedia',
     mode: 'twitter',
   },
   {
     id: '11',
-    name: 'LinkedIn',
+    name: contents('linkedIn'),
     icon: 'linkedin',
     screen: 'QRcodeForSocialMedia',
     mode: 'linkedIn',
   },
   {
     id: '12',
-    name: 'YouTube',
+    name: contents('youTube'),
     icon: 'youtube',
     screen: 'QRcodeForSocialMedia',
     mode: 'youTube',
   },
   {
     id: '13',
-    name: 'Telegram',
+    name: contents('telegram'),
     icon: 'telegram',
     screen: 'QRcodeForSocialMedia',
     mode: 'telegram',
   },
   {
     id: '14',
-    name: 'TikTok',
+    name: contents('tiktok'),
     icon: 'tiktok',
     screen: 'QRcodeForSocialMedia',
     mode: 'tiktok',
   },
   {
     id: '15',
-    name: 'Video',
+    name: contents('video'),
     icon: 'video',
     screen: 'QRcodeForSocialMedia',
     mode: 'video',
   },
   {
     id: '16',
-    name: 'Google Forms',
+    name: contents('googleForms'),
     icon: 'file-document-outline',
     screen: 'QRcodeForSocialMedia',
     mode: 'googleForms',
   },
   {
     id: '17',
-    name: 'Snapchat',
+    name: contents('snapchat'),
     icon: 'snapchat',
     screen: 'QRcodeForSocialMedia',
     mode: 'snapchat',
   },
   {
     id: '18',
-    name: 'Spotify',
+    name: contents('spotify'),
     icon: 'spotify',
     screen: 'QRcodeForSocialMedia',
     mode: 'spotify',
   },
   {
     id: '19',
-    name: 'Google Docs',
+    name: contents('googleDoc'),
     icon: 'file-document-outline',
     screen: 'QRcodeForSocialMedia',
     mode: 'googleDoc',
   },
   {
     id: '20',
-    name: 'Google Review',
+    name: contents('googleReview'),
     icon: 'star-outline',
     screen: 'QRcodeForSocialMedia',
     mode: 'googleReview',
   },
   {
     id: '21',
-    name: 'Payment',
+    name: contents('payment'),
     icon: 'credit-card-outline',
     screen: 'QRcodeForSocialMedia',
     mode: 'payment',
   },
   {
     id: '22',
-    name: 'Logo',
+    name: contents('logo'),
     icon: 'image-outline',
     screen: 'QRcodeForSocialMedia',
     mode: 'logo',
   },
   {
     id: '23',
-    name: 'Office365',
+    name: contents('office'),
     icon: 'microsoft-office',
     screen: 'QRcodeForSocialMedia',
     mode: 'office',
   },
   {
     id: '24',
-    name: 'Paypal',
+    name: contents('paypal'),
     icon: 'paypal',
     screen: 'QRcodeForSocialMedia',
     mode: 'paypal',
   },
   {
     id: '25',
-    name: 'Etsy',
+    name: contents('etsy'),
     icon: 'etsy',
     screen: 'QRcodeForSocialMedia',
     mode: 'etsy',

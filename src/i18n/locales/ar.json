@@ -1,15 +1,5 @@
 {
-
-    "cancel": "إلغاء",
-    "create": "إنشاء",
-    "delete": "حذف",
-    "or": "أو",
-    "ok": "موافق",
-    "save": "حفظ",
-    "yes": "نعم",
-    "partner": "شريك",
-    "searchByOfferId": "البحث برقم العرض",
-    "Quantity": "الكمية",
-    "Update": "تحديث"
-
+    "home": "گھر",
+    "wellCome": "خوش آمدید",
+    "changeLanguage": "زبان تبدیل کریں"
 }

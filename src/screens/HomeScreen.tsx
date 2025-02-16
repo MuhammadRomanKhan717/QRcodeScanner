@@ -6,6 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import NavigationCard from '../components/homeComponents/NavigationCard';
 import {moderateScale} from '../utils/dimensions';
 import Header from '../components/commonComponents/Header';
+import {contents} from '../context';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -17,7 +18,7 @@ const HomeScreen = () => {
       icon: <Icon name="qr-code" />,
       iconSize: 50,
       iconColor: '#4CAF50',
-      text: 'Generate QR Codes',
+      text: contents('generateQRCodes'),
     },
     {
       id: '2',
@@ -25,7 +26,7 @@ const HomeScreen = () => {
       icon: <MaterialCommunityIcons name="barcode" />,
       iconSize: 50,
       iconColor: '#2196F3',
-      text: 'Generate Bar Codes',
+      text: contents('generateBarCodes'),
     },
     {
       id: '3',
@@ -33,7 +34,7 @@ const HomeScreen = () => {
       icon: <MaterialCommunityIcons name="qrcode-scan" />,
       iconSize: 50,
       iconColor: '#FF9800',
-      text: 'Scan QR Codes',
+      text: contents('scanQRCodes'),
     },
     {
       id: '4',
@@ -41,10 +42,9 @@ const HomeScreen = () => {
       icon: <MaterialCommunityIcons name="barcode-scan" />,
       iconSize: 50,
       iconColor: '#FF5722',
-      text: 'Scan Bar Codes',
+      text: contents('scanBarCodes'),
     },
   ];
-
   const renderItem = ({item}) => (
     <NavigationCard
       onPress={() => navigation.navigate(item.screen)}
@@ -58,7 +58,7 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <Header
-        title="Home"
+        title={contents('home')}
         showBackButton={false}
         rightComponent={
           <TouchableOpacity
@@ -68,7 +68,7 @@ const HomeScreen = () => {
           </TouchableOpacity>
         }
       />
-      <Text style={styles.title}>Welcome</Text>
+      <Text style={styles.title}>{contents('welcome')}</Text>
       <FlatList
         data={cardsData}
         numColumns={2}
