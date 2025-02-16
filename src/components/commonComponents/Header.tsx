@@ -7,6 +7,7 @@ interface HeaderProps {
   onBackPress?: () => void;
   onBackLongPress?: () => void;
   rightComponent?: React.ReactNode;
+  showBackButton?: boolean; // New prop
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -14,16 +15,21 @@ const Header: React.FC<HeaderProps> = ({
   onBackPress,
   onBackLongPress,
   rightComponent,
+  showBackButton = true, // Default is true
 }) => {
   return (
     <View style={styles.headerContainer}>
-      {/* Back Button */}
-      <TouchableOpacity
-        onPress={onBackPress}
-        onLongPress={onBackLongPress}
-        style={styles.backButton}>
-        <Icon name="arrow-back" size={24} color="black" />
-      </TouchableOpacity>
+      {/* Back Button (conditionally rendered) */}
+      {showBackButton ? (
+        <TouchableOpacity
+          onPress={onBackPress}
+          onLongPress={onBackLongPress}
+          style={styles.backButton}>
+          <Icon name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+      ) : (
+        <View style={styles.placeholder} /> // Placeholder for alignment
+      )}
 
       {/* Title */}
       <Text style={styles.title}>{title}</Text>
@@ -47,6 +53,9 @@ const styles = StyleSheet.create({
   },
   backButton: {
     padding: 8,
+  },
+  placeholder: {
+    width: 32, // Ensures alignment when the back button is hidden
   },
   title: {
     fontSize: 18,

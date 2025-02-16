@@ -1,17 +1,14 @@
-import {StyleSheet, Text, View, FlatList} from 'react-native';
 import React from 'react';
+import {StyleSheet, Text, View, FlatList, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import BarIcon from 'react-native-vector-icons/FontAwesome';
-import ScanBar from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import NavigationCard from '../components/homeComponents/NavigationCard';
-import {moderateScale, scaleWidth} from '../utils/dimensions';
-import {useLanguage} from '../context';
+import {moderateScale} from '../utils/dimensions';
+import Header from '../components/commonComponents/Header';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const useLagange = useLanguage();
-  console.log('useLagange', useLagange);
 
   const cardsData = [
     {
@@ -25,7 +22,7 @@ const HomeScreen = () => {
     {
       id: '2',
       screen: 'GenerateBarCodesScreen',
-      icon: <BarIcon name="barcode" />,
+      icon: <MaterialCommunityIcons name="barcode" />,
       iconSize: 50,
       iconColor: '#2196F3',
       text: 'Generate Bar Codes',
@@ -33,7 +30,7 @@ const HomeScreen = () => {
     {
       id: '3',
       screen: 'ScanQRCodesScreen',
-      icon: <ScanBar name="qrcode-scan" />,
+      icon: <MaterialCommunityIcons name="qrcode-scan" />,
       iconSize: 50,
       iconColor: '#FF9800',
       text: 'Scan QR Codes',
@@ -41,7 +38,7 @@ const HomeScreen = () => {
     {
       id: '4',
       screen: 'ScanBarCodesScreen',
-      icon: <ScanBar name="barcode-scan" />,
+      icon: <MaterialCommunityIcons name="barcode-scan" />,
       iconSize: 50,
       iconColor: '#FF5722',
       text: 'Scan Bar Codes',
@@ -60,7 +57,18 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>well come</Text>
+      <Header
+        title="Home"
+        showBackButton={false}
+        rightComponent={
+          <TouchableOpacity
+            onPress={() => navigation.openDrawer()}
+            style={styles.iconButton}>
+            <MaterialCommunityIcons name="menu" size={30} color="black" />
+          </TouchableOpacity>
+        }
+      />
+      <Text style={styles.title}>Welcome</Text>
       <FlatList
         data={cardsData}
         numColumns={2}
@@ -87,8 +95,7 @@ const styles = StyleSheet.create({
     marginBottom: moderateScale(30),
     color: '#333',
   },
-  cardListContainer: {
-    // width: scaleWidth(300),
-    // backgroundColor: 'red',
+  iconButton: {
+    padding: 10,
   },
 });
