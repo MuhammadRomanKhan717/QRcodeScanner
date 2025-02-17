@@ -62,6 +62,13 @@ const data: QRCodeItem[] = [
     mode: 'Audio',
   },
   {
+    id: '28',
+    name: contents('Email'),
+    icon: 'email',
+    screen: 'QRcodeForEmail',
+    mode: 'Email',
+  },
+  {
     id: '7',
     name: contents('pptx'),
     icon: 'presentation-play',
@@ -231,7 +238,6 @@ const data: QRCodeItem[] = [
   },
 ];
 
-// Function to dynamically select the correct icon component
 const getIconComponent = (iconName: string) => {
   const fontistoIcons = ['telegram', 'facebook', 'twitter', 'file-2'];
   const materialIcons = [
@@ -256,6 +262,7 @@ const getIconComponent = (iconName: string) => {
     'etsy',
     'card-account-details-outline',
     'microsoft-excel',
+    'email',
   ];
   if (iconName === 'paypal') {
     return <FontAwesome name="paypal" size={24} color="#4CAF50" />;
@@ -300,7 +307,7 @@ const GenerateQRCodesScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <Animated.Text entering={FadeIn.duration(500)} style={styles.heading}>
-        All Types Of QR Codes
+        {contents('AllQRCodes')}
       </Animated.Text>
       <FlatList
         data={data}

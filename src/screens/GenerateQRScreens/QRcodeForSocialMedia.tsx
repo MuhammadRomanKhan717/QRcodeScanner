@@ -18,6 +18,7 @@ import {useRoute} from '@react-navigation/native';
 import {moderateScale} from '../../utils/dimensions';
 import {colors} from '../../utils/LightTheme';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {contents} from '../../context';
 
 const QRcodeForSocialMedia = () => {
   const route = useRoute();
@@ -29,7 +30,7 @@ const QRcodeForSocialMedia = () => {
 
   const showSnackbar = message => {
     Snackbar.show({
-      text: message,
+      text: contents(message),
       duration: Snackbar.LENGTH_SHORT,
     });
   };
@@ -42,7 +43,7 @@ const QRcodeForSocialMedia = () => {
         );
         return granted === PermissionsAndroid.RESULTS.GRANTED;
       } catch (err) {
-        console.warn('Permission request error:', err);
+        console.warn(contents('PermissionRequestError'), err);
         return false;
       }
     }
@@ -51,37 +52,36 @@ const QRcodeForSocialMedia = () => {
 
   const captureQR = async () => {
     try {
-      if (!viewShotRef.current)
-        throw new Error('QR Code ViewShot reference is null.');
+      if (!viewShotRef.current) throw new Error(contents('QRViewShotError'));
       const uri = await viewShotRef.current.capture();
       return uri || null;
     } catch (error) {
-      Alert.alert('Error', 'Failed to capture QR Code.');
+      Alert.alert(contents('Error'), contents('CaptureQRError'));
       return null;
     }
   };
 
   const shareQRCode = async () => {
     if (!qrGenerated || !link) {
-      showSnackbar('Generate a valid QR Code first.');
+      showSnackbar('GenerateValidQR');
       return;
     }
     try {
       const uri = await captureQR();
       if (!uri) return;
       await Share.open({
-        title: 'Share QR Code',
+        title: contents('ShareQRCodeTitle'),
         url: `file://${uri}`,
         type: 'image/png',
       });
     } catch (error) {
-      console.error('Share error:', error);
+      console.error(contents('ShareError'), error);
     }
   };
 
   const downloadQRCode = async () => {
     if (!qrGenerated || !link) {
-      showSnackbar('Generate a valid QR Code first.');
+      showSnackbar('GenerateValidQR');
       return;
     }
     try {
@@ -92,38 +92,31 @@ const QRcodeForSocialMedia = () => {
         if (!hasPermission) return;
       }
       await CameraRoll.save(uri, {type: 'photo'});
-      showSnackbar('QR Code saved to Gallery!');
+      showSnackbar('QRCodeSaved');
     } catch (error) {
-      Alert.alert('Error', 'Failed to save QR Code.');
+      Alert.alert(contents('Error'), contents('DownloadQRError'));
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>{mode} QR Code Generator</Text>
+      <Text style={styles.heading}>
+        {mode} {contents('QRCodeGenerator')}
+      </Text>
       <View style={styles.inputContainer}>
         <Icon name={mode.toLowerCase()} size={20} color={colors.grey600} />
 
         <TextInput
           style={styles.input}
-          placeholder={`${mode} Link`}
+          placeholder={contents('EnterLink')}
           value={link}
           onChangeText={setLink}
         />
       </View>
-      <View
-        style={{
-          alignItems: 'center',
-          width: '100%',
-          backgroundColor: colors.white,
-          borderRadius: moderateScale(10),
-          paddingHorizontal: moderateScale(10),
-          marginBottom: moderateScale(15),
-          elevation: 4,
-        }}>
+      <View style={styles.inputWrapper}>
         <TextInput
           style={styles.input}
-          placeholder="Name your QR (optional)"
+          placeholder={contents('NameYourQR')}
           value={name}
           onChangeText={setName}
         />
@@ -133,13 +126,13 @@ const QRcodeForSocialMedia = () => {
           style={styles.button}
           onPress={() => {
             if (!link) {
-              showSnackbar('Please enter a link to generate QR Code.');
+              showSnackbar('EnterValidLink');
               return;
             }
             setQrGenerated(true);
-            showSnackbar('QR Code Generated!');
+            showSnackbar('QRGenerated');
           }}>
-          <Text style={styles.buttonText}>Generate QR Code</Text>
+          <Text style={styles.buttonText}>{contents('GenerateQR')}</Text>
         </TouchableOpacity>
       )}
       {qrGenerated && link && (
@@ -148,14 +141,17 @@ const QRcodeForSocialMedia = () => {
             <ViewShot ref={viewShotRef} options={{format: 'png', quality: 1}}>
               <QRCode value={link} size={200} />
             </ViewShot>
-            <Text style={styles.qrText}>Scan to visit {mode}</Text>
+            <Text style={styles.qrText}>
+              {contents('ScanToVisit')}
+              {mode}
+            </Text>
           </View>
           <View style={styles.row}>
             <TouchableOpacity style={styles.button} onPress={downloadQRCode}>
-              <Text style={styles.buttonText}>Download QR</Text>
+              <Text style={styles.buttonText}>{contents('DownloadQR')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={shareQRCode}>
-              <Text style={styles.buttonText}>Share QR</Text>
+              <Text style={styles.buttonText}>{contents('ShareQR')}</Text>
             </TouchableOpacity>
           </View>
         </>
@@ -163,6 +159,7 @@ const QRcodeForSocialMedia = () => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -187,8 +184,16 @@ const styles = StyleSheet.create({
     marginBottom: moderateScale(15),
     elevation: 4,
   },
+  inputWrapper: {
+    alignItems: 'center',
+    width: '100%',
+    backgroundColor: colors.white,
+    borderRadius: moderateScale(10),
+    paddingHorizontal: moderateScale(10),
+    marginBottom: moderateScale(15),
+    elevation: 4,
+  },
   input: {
-    // flex: 1,
     height: moderateScale(50),
     width: moderateScale(300),
     fontSize: moderateScale(16),
@@ -211,6 +216,11 @@ const styles = StyleSheet.create({
   qrContainer: {
     alignItems: 'center',
     marginTop: moderateScale(20),
+  },
+  qrText: {
+    fontSize: moderateScale(14),
+    color: colors.grey800,
+    marginTop: moderateScale(10),
   },
   row: {
     flexDirection: 'row',

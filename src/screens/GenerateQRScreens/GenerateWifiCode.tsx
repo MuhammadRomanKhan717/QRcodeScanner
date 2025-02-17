@@ -17,6 +17,7 @@ import Header from '../../components/commonComponents/Header';
 import {moderateScale} from '../../utils/dimensions';
 import {colors} from '../../utils/LightTheme';
 import Animated, {FadeIn, FadeOut, BounceIn} from 'react-native-reanimated';
+import {contents} from '../../context';
 
 const GenerateWifiCode: React.FC = () => {
   const navigation = useNavigation();
@@ -31,7 +32,7 @@ const GenerateWifiCode: React.FC = () => {
 
   const generateQRCode = () => {
     if (!ssid || !password) {
-      setError('Please enter both SSID and password!');
+      setError(contents('PleaseEnterPassword'));
       return;
     }
     setError('');
@@ -56,11 +57,11 @@ const GenerateWifiCode: React.FC = () => {
           const path = `${RNFS.DownloadDirectoryPath}/wifi-qr-code.png`;
           const base64Data = qrDataUrl.split(',')[1];
           RNFS.writeFile(path, base64Data, 'base64')
-            .then(() => Alert.alert('Success', 'QR Code saved to Downloads!'))
-            .catch(error => Alert.alert('Error', 'Failed to save QR Code'));
+            .then(() => Alert.alert(contents('QRsavedDownloads')))
+            .catch(error => Alert.alert(contents('FailedsaveCode')));
         });
       } catch (error) {
-        Alert.alert('Error', 'Failed to save QR Code');
+        Alert.alert(contents('FailedQRCode'));
       }
     }
   };
@@ -68,24 +69,25 @@ const GenerateWifiCode: React.FC = () => {
   return (
     <View style={styles.container}>
       <Header
-        title="Generate Wifi Codes"
+        title={contents('GenerateWifiCodes')}
         onBackPress={() => navigation.goBack()}
         rightComponent={null}
       />
       <ScrollView>
         <View style={styles.wrapper}>
           <Animated.Text entering={FadeIn.duration(500)} style={styles.title}>
-            Wi-Fi QR Code Generator
+            {contents('EnterDetailGenerateCode')}
           </Animated.Text>
+
           <TextInput
             style={styles.input}
-            placeholder="Enter SSID"
+            placeholder={contents('EnterSSID')}
             value={ssid}
             onChangeText={setSsid}
           />
           <TextInput
             style={styles.input}
-            placeholder="Enter Password"
+            placeholder={contents('EnterPassword')}
             value={password}
             secureTextEntry
             onChangeText={setPassword}
@@ -104,7 +106,9 @@ const GenerateWifiCode: React.FC = () => {
 
           <Animated.View entering={BounceIn.duration(700)}>
             <TouchableOpacity style={styles.button} onPress={generateQRCode}>
-              <Text style={styles.buttonText}>Generate QR Code</Text>
+              <Text style={styles.buttonText}>
+                {contents('GenerateQRCode')}
+              </Text>
             </TouchableOpacity>
           </Animated.View>
 
@@ -118,14 +122,16 @@ const GenerateWifiCode: React.FC = () => {
           )}
 
           <TouchableOpacity style={styles.clearButton} onPress={clearInput}>
-            <Text style={styles.clearButtonText}>Clear</Text>
+            <Text style={styles.clearButtonText}>{contents('Clear')}</Text>
           </TouchableOpacity>
 
           {isActive && (
             <TouchableOpacity
               style={styles.downloadButton}
               onPress={downloadQRCode}>
-              <Text style={styles.downloadButtonText}>Download QR Code</Text>
+              <Text style={styles.downloadButtonText}>
+                {contents('DownloadQRCode')}
+              </Text>
             </TouchableOpacity>
           )}
         </View>

@@ -6,8 +6,6 @@ import {
   TouchableOpacity,
   Alert,
   Image,
-  PermissionsAndroid,
-  Platform,
   StyleSheet,
   ScrollView,
 } from 'react-native';
@@ -16,6 +14,7 @@ import ViewShot from 'react-native-view-shot';
 import Share from 'react-native-share';
 import CameraRoll from '@react-native-camera-roll/camera-roll';
 import {launchImageLibrary} from 'react-native-image-picker';
+import {contents} from '../../context';
 
 const QRCodeForVCard = () => {
   const [firstName, setFirstName] = useState('');
@@ -38,9 +37,9 @@ const QRCodeForVCard = () => {
   const selectImage = () => {
     launchImageLibrary({mediaType: 'photo'}, response => {
       if (response.didCancel) {
-        console.log('User cancelled image selection');
+        console.log(contents('ImageSelectionCancelled'));
       } else if (response.errorMessage) {
-        console.error('Image Picker Error:', response.errorMessage);
+        console.error(contents('ImagePickerError'), response.errorMessage);
       } else {
         setImageUri(response.assets[0].uri);
       }
@@ -50,7 +49,7 @@ const QRCodeForVCard = () => {
   // Generate vCard String
   const generateVCard = () => {
     if (!firstName || !lastName || !mobile || !email) {
-      Alert.alert('Missing Information', 'Please fill in required fields.');
+      Alert.alert(contents('MissingInfoTitle'), contents('MissingInfoMessage'));
       return null;
     }
 
@@ -74,53 +73,52 @@ URL:${website}`;
 
   const captureQR = async () => {
     try {
-      if (!viewShotRef.current)
-        throw new Error('QR Code ViewShot reference is null.');
+      if (!viewShotRef.current) throw new Error(contents('QRViewShotError'));
       const uri = await viewShotRef.current.capture();
       return uri || null;
     } catch (error) {
-      Alert.alert('Error', 'Failed to capture QR Code.');
+      Alert.alert(contents('Error'), contents('CaptureQRError'));
       return null;
     }
   };
 
   const shareQRCode = async () => {
     if (!qrGenerated) {
-      Alert.alert('Error', 'Generate a valid QR Code first.');
+      Alert.alert(contents('Error'), contents('GenerateValidQR'));
       return;
     }
     try {
       const uri = await captureQR();
       if (!uri) return;
       await Share.open({
-        title: 'Share QR Code',
+        title: contents('ShareQRCodeTitle'),
         url: `file://${uri}`,
         type: 'image/png',
       });
     } catch (error) {
-      console.error('Share error:', error);
+      console.error(contents('ShareError'), error);
     }
   };
 
   const downloadQRCode = async () => {
     if (!qrGenerated) {
-      Alert.alert('Error', 'Generate a valid QR Code first.');
+      Alert.alert(contents('Error'), contents('GenerateValidQR'));
       return;
     }
     try {
       const uri = await captureQR();
       if (!uri) return;
       await CameraRoll.save(uri, {type: 'photo'});
-      Alert.alert('Success', 'QR Code saved to Gallery!');
+      Alert.alert(contents('Success'), contents('QRCodeSaved'));
     } catch (error) {
-      Alert.alert('Error', 'Failed to save QR Code.');
+      Alert.alert(contents('Error'), contents('DownloadQRError'));
     }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.heading}>vCard QR Code Generator</Text>
-      <Text style={styles.subheading}>Fill in the details below:</Text>
+      <Text style={styles.heading}>{contents('VCardQRGenerator')}</Text>
+      <Text style={styles.subheading}>{contents('FillDetails')}</Text>
 
       {/* Image Selection */}
       <TouchableOpacity style={styles.imagePicker} onPress={selectImage}>
@@ -128,89 +126,85 @@ URL:${website}`;
           <Image source={{uri: imageUri}} style={styles.profileImage} />
         ) : (
           <View style={styles.profileImageContainer}>
-            <Image
-              source={{
-                uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJQAAACUCAMAAABC4vDmAAAAMFBMVEXk5ueutLeor7Lf4ePn6eqrsbW5vsHIzM7a3d60ur3BxsjR1NbN0dPX2tzr7O29wsX2DjRMAAADaUlEQVR4nO2bW3LkIAwADYi3be5/25iZZB4bxyDZgqkt+ivZn+0SQgahTNNgMBgMBoPBYDAYDAaDwWCaAGBSG/mn3i53AFQMxt8xdpm6ewE466XU4getpZlVVy9YjHgKPcRE6Ke1KclfRnct2UkLprATpWe05g5W4PzfShmZVHOneGh0D1ZjK5j/yKZ3lpZLCPZ46R7Bcu2sKuN0i1Uzp1gXpxvN8qpeSQjTyMkgAiV0aJFWMGOctnrVpLZXJ/k3DRYQAi5Q2wJGdqkFqZThXj98oHKouK2wGZVhzqra78s/oXK8VobgxF2rHMVpY+WUipSU2goo5/pBoqTUtn6cZ+OV5sScVLTV4y0Kjhgp4fmOVajT3TuMUshTyxPG8kmr5xnGmnBCiu8C8b9JMS7fRyY6vSQwSi0fWDwn9YmfGaBKBUap1dOctGU8JVC3H29LaCGePHnvWKT104lVCgIpUMwXd1JR4KxSGcr+Y917NwhFXTIrTYQ7coNeHjhsVnFnVGZFtTyZL6IPFM7Js/YRfgBcWWduAz2sEN082e55prrPwV+iXii89T3i1NKp8tWhzWsDzqpxnDKlO6AW7J3q38BymFjSdHlvP3pu12LuYHRjdUHuaWlhew5xgApe6Fex7RffLUoPrWmxRkipM1KKNLv+IzjfuBjnuOTv3GcYAawvQN8Rqvy/K7dEG5L5Po4ak4KdF9dpvAtWtdhkvL5l02ue538RPoWoYG0oBpOKQUh9WNJz3pvZqSYRg9VZL3bL017B8iFyxwsmZ2uFniFLC2MpBYh7024VWt4yVQpQ9jiLDr1kYGhaHw+71WiJdHGTaosSMpP2kOnKWwTMlWfyAvq63ic4T+2//ta66L4M9iqju1Y6Xx+Kk5N4q9NTJhDP7bl9rZOZZS/Lple2S8UJJ+IYQhEt6ImF7EShoJasq1P8DeIjBGecMoRYAbeT0Ohsh8Cy797AdmjpT9gItEEtIL4vTULiPoTEx0YsGpHslLlJGr5eqs3iZRCN2tTKSVTPMNGnDwjoVPcgQX1SJ1pVherE7AhJqq6t3Wzr3amq67hHqvPImtMxceiVjimn+koaWT5DTaq3zahMcf2A8ucC5yhXdfqEG51UWrx23+InvphSLb97PxQz3cv2FN++VQeKyzcYDAaDwaA9XxcLKh2A6JUdAAAAAElFTkSuQmCC',
-              }}
-              style={styles.profileImage}
-            />
-            <Text style={styles.imageText}>Select Profile Image</Text>
+            <Text style={styles.imageText}>
+              {contents('SelectProfileImage')}
+            </Text>
           </View>
         )}
       </TouchableOpacity>
 
       <TextInput
         style={styles.input}
-        placeholder="First Name"
+        placeholder={contents('FirstName')}
         value={firstName}
         onChangeText={setFirstName}
       />
       <TextInput
         style={styles.input}
-        placeholder="Last Name"
+        placeholder={contents('LastName')}
         value={lastName}
         onChangeText={setLastName}
       />
       <TextInput
         style={styles.input}
-        placeholder="Mobile"
+        placeholder={contents('Mobile')}
         value={mobile}
         onChangeText={setMobile}
         keyboardType="phone-pad"
       />
       <TextInput
         style={styles.input}
-        placeholder="Email"
+        placeholder={contents('Email')}
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
       />
       <TextInput
         style={styles.input}
-        placeholder="Company (optional)"
+        placeholder={contents('Company')}
         value={company}
         onChangeText={setCompany}
       />
       <TextInput
         style={styles.input}
-        placeholder="Job Title (optional)"
+        placeholder={contents('JobTitle')}
         value={jobTitle}
         onChangeText={setJobTitle}
       />
       <TextInput
         style={styles.input}
-        placeholder="Street (optional)"
+        placeholder={contents('Street')}
         value={street}
         onChangeText={setStreet}
       />
       <TextInput
         style={styles.input}
-        placeholder="City"
+        placeholder={contents('City')}
         value={city}
         onChangeText={setCity}
       />
       <TextInput
         style={styles.input}
-        placeholder="State"
+        placeholder={contents('State')}
         value={state}
         onChangeText={setState}
       />
       <TextInput
         style={styles.input}
-        placeholder="ZIP Code"
+        placeholder={contents('ZipCode')}
         value={zip}
         onChangeText={setZip}
         keyboardType="numeric"
       />
       <TextInput
         style={styles.input}
-        placeholder="Country"
+        placeholder={contents('Country')}
         value={country}
         onChangeText={setCountry}
       />
       <TextInput
         style={styles.input}
-        placeholder="Website (optional)"
+        placeholder={contents('Website')}
         value={website}
         onChangeText={setWebsite}
       />
@@ -218,11 +212,9 @@ URL:${website}`;
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          if (generateVCard()) {
-            setQrGenerated(true);
-          }
+          if (generateVCard()) setQrGenerated(true);
         }}>
-        <Text style={styles.buttonText}>Generate QR Code</Text>
+        <Text style={styles.buttonText}>{contents('GenerateQR')}</Text>
       </TouchableOpacity>
 
       {qrGenerated && (
@@ -231,15 +223,15 @@ URL:${website}`;
             <ViewShot ref={viewShotRef} options={{format: 'png', quality: 1}}>
               <QRCode value={generateVCard()} size={200} />
             </ViewShot>
-            <Text style={styles.qrText}>Scan to save vCard</Text>
+            <Text style={styles.qrText}>{contents('ScanToSaveVCard')}</Text>
           </View>
 
           <View style={styles.row}>
             <TouchableOpacity style={styles.button} onPress={downloadQRCode}>
-              <Text style={styles.buttonText}>Download QR</Text>
+              <Text style={styles.buttonText}>{contents('DownloadQR')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={shareQRCode}>
-              <Text style={styles.buttonText}>Share QR</Text>
+              <Text style={styles.buttonText}>{contents('ShareQR')}</Text>
             </TouchableOpacity>
           </View>
         </>
@@ -269,9 +261,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   buttonText: {color: '#fff'},
-  profileImageContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+  qrContainer: {marginTop: 20, alignItems: 'center'},
+  qrText: {marginTop: 10, fontSize: 14, color: '#555'},
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 15,
   },
 });
 

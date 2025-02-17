@@ -23,6 +23,7 @@ import LanguageScreen from '../screens/LanguageScreen';
 import TermsScreen from '../screens/TermsScreen';
 import AboutScreen from '../screens/AboutScreen';
 import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
+import {contents} from '../context';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -102,15 +103,15 @@ const DrawerNavigator = () => {
       initialRouteName="MainApp"
       screenOptions={{
         headerShown: false,
-        drawerActiveTintColor: '#2196F3', // Active item color
-        drawerInactiveTintColor: '#666', // Inactive item color
-        drawerLabelStyle: {fontSize: 16}, // Font styling
+        drawerActiveTintColor: '#2196F3',
+        drawerInactiveTintColor: '#666',
+        drawerLabelStyle: {fontSize: 16},
       }}>
       <Drawer.Screen
         name="MainApp"
         component={StackNavigator}
         options={{
-          title: 'Home',
+          title: contents('Home'),
           drawerIcon: ({color, size}) => (
             <Icon name="home" color={color} size={size} />
           ),
@@ -120,6 +121,7 @@ const DrawerNavigator = () => {
         name="Change Language"
         component={LanguageScreen}
         options={{
+          title: contents('ChangeLanguage'),
           drawerIcon: ({color, size}) => (
             <Icon name="translate" color={color} size={size} />
           ),
@@ -129,6 +131,7 @@ const DrawerNavigator = () => {
         name="Terms & Conditions"
         component={TermsScreen}
         options={{
+          title: contents('TermsAndConditions'),
           drawerIcon: ({color, size}) => (
             <Icon name="file-document-outline" color={color} size={size} />
           ),
@@ -138,6 +141,7 @@ const DrawerNavigator = () => {
         name="About Us"
         component={AboutScreen}
         options={{
+          title: contents('AboutUs'),
           drawerIcon: ({color, size}) => (
             <Icon name="information-outline" color={color} size={size} />
           ),
@@ -147,6 +151,7 @@ const DrawerNavigator = () => {
         name="Privacy Policy"
         component={PrivacyPolicyScreen}
         options={{
+          title: contents('PrivacyPolicy'),
           drawerIcon: ({color, size}) => (
             <Icon name="lock-outline" color={color} size={size} />
           ),

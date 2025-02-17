@@ -43,5 +43,8 @@
     "logo": "लोगो",
     "office": "ऑफिस365",
     "paypal": "पेपल",
-    "etsy": "एटसी"
+    "etsy": "एटसी",
+    "AllQRCodes_hi": "सभी प्रकार के QR कोड",
+    "GenerateWifiCodes": "वाईफाई कोड बनाएं",
+        "EnterDetailGenerateCode": "विवरण दर्ज करें और QR कोड बनाएं"
 }

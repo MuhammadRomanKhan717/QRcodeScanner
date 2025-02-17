@@ -16,19 +16,20 @@ import RNFS from 'react-native-fs';
 import {moderateScale, scaleHeight} from '../../utils/dimensions';
 import {colors} from '../../utils/LightTheme';
 import Header from '../../components/commonComponents/Header';
+import {contents} from '../../context';
 
 const QRcodeForEmail = () => {
   const navigation = useNavigation();
-  const [email, setEmail] = useState(''); // Default email is empty
-  const [subject, setSubject] = useState(''); // Default subject
-  const [body, setBody] = useState(''); // Default body text
+  const [email, setEmail] = useState('');
+  const [subject, setSubject] = useState('');
+  const [body, setBody] = useState('');
   const [qrValue, setQrValue] = useState('');
   const viewShotRef = useRef(null);
 
   // Generate QR Code
   const generateQRCode = () => {
     if (!email) {
-      Alert.alert('Error', 'Please enter an email recipient.');
+      Alert.alert(contents('Error'), contents('EnterEmailRecipient'));
       return;
     }
     const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(
@@ -40,14 +41,14 @@ const QRcodeForEmail = () => {
   // Share QR Code
   const shareQRCode = async () => {
     if (!qrValue) {
-      Alert.alert('Error', 'Generate the QR code first.');
+      Alert.alert(contents('Error'), contents('GenerateQRCodeFirst'));
       return;
     }
 
     try {
       const uri = await captureQR();
       const options = {
-        title: 'Share QR Code',
+        title: contents('ShareQRCodeTitle'),
         url: `file://${uri}`,
         type: 'image/png',
       };
@@ -68,7 +69,7 @@ const QRcodeForEmail = () => {
             .catch(reject);
         });
       } else {
-        reject('ViewShot ref not found');
+        reject(contents('ViewShotRefNotFound'));
       }
     });
   };
@@ -76,82 +77,77 @@ const QRcodeForEmail = () => {
   // Download QR Code
   const downloadQRCode = async () => {
     if (!qrValue) {
-      Alert.alert('Error', 'Generate the QR code first.');
+      Alert.alert(contents('Error'), contents('GenerateQRCodeFirst'));
       return;
     }
 
     try {
       const uri = await captureQR();
-      Alert.alert('Success', `QR Code saved to: ${uri}`);
+      Alert.alert(contents('Success'), `${contents('QRCodeSaved')}: ${uri}`);
     } catch (error) {
-      console.error('Error saving QR Code:', error);
+      console.error(contents('DownloadQRError'), error);
     }
   };
 
   return (
     <View>
       <Header
-        title="generate the QR code"
+        title={contents('GenerateQRCode')}
         onBackPress={() => navigation.goBack()}
-        onBackLongPress={() =>
-          Alert.alert('Long Press', 'You held the back button!')
-        }
+        onBackLongPress={() => Alert.alert(contents('LongPressbutton'))}
         rightComponent={null}
       />
-      {/* Email Input */}
-      <ScrollView style={{}}>
+      <ScrollView>
         <View style={styles.container}>
-          <Text style={styles.heading}>Email QR Code Generator</Text>
+          <Text style={styles.heading}>{contents('EmailQRCodeGenerator')}</Text>
           <TextInput
             style={styles.input}
-            placeholder="E-mail recipient"
+            placeholder={contents('EmailRecipient')}
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
           />
 
-          {/* Subject Input */}
           <TextInput
             style={styles.input}
-            placeholder="Subject"
+            placeholder={contents('EmailSubject')}
             value={subject}
             onChangeText={setSubject}
           />
 
-          {/* Body Input */}
           <TextInput
             style={styles.textArea}
-            placeholder="Body Text"
+            placeholder={contents('EmailBody')}
             value={body}
             onChangeText={setBody}
             multiline={true}
             numberOfLines={4}
           />
 
-          {/* Generate Button */}
           <TouchableOpacity style={styles.button} onPress={generateQRCode}>
-            <Text style={styles.buttonText}>Generate QR Code</Text>
+            <Text style={styles.buttonText}>{contents('GenerateQRCode')}</Text>
           </TouchableOpacity>
 
-          {/* QR Code Display */}
           {qrValue ? (
             <View style={styles.qrContainer}>
               <ViewShot ref={viewShotRef} options={{format: 'png', quality: 1}}>
                 <QRCode value={qrValue} size={200} />
               </ViewShot>
 
-              {/* Share Button */}
               <TouchableOpacity
                 style={styles.shareButton}
                 onPress={shareQRCode}>
-                <Text style={styles.shareButtonText}>Share QR Code</Text>
+                <Text style={styles.shareButtonText}>
+                  {contents('ShareQRCode')}
+                </Text>
               </TouchableOpacity>
 
-              {/* Download Button */}
               <TouchableOpacity
                 style={styles.downloadButton}
                 onPress={downloadQRCode}>
-                <Text style={styles.downloadButtonText}>Download QR Code</Text>
+                <Text style={styles.downloadButtonText}>
+                  {contents('DownloadQRCode')}
+                </Text>
               </TouchableOpacity>
             </View>
           ) : null}
@@ -185,10 +181,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: moderateScale(15),
     marginBottom: moderateScale(15),
     color: colors.inputText,
-    shadowColor: colors.black,
-    shadowOpacity: 0.1,
-    shadowRadius: moderateScale(5),
-    shadowOffset: {width: 0, height: moderateScale(2)},
     elevation: 4,
   },
   textArea: {
@@ -201,10 +193,6 @@ const styles = StyleSheet.create({
     marginBottom: moderateScale(15),
     color: colors.inputText,
     textAlignVertical: 'top',
-    shadowColor: colors.black,
-    shadowOpacity: 0.1,
-    shadowRadius: moderateScale(5),
-    shadowOffset: {width: 0, height: moderateScale(2)},
     elevation: 4,
   },
   button: {
@@ -213,10 +201,6 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(10),
     width: '100%',
     alignItems: 'center',
-    shadowColor: colors.black,
-    shadowOpacity: 0.2,
-    shadowRadius: moderateScale(10),
-    shadowOffset: {width: 0, height: moderateScale(4)},
     elevation: 6,
   },
   buttonText: {

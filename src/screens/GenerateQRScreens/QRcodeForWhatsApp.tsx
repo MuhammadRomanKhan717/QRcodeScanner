@@ -15,6 +15,7 @@ import CountryPicker from 'react-native-country-picker-modal';
 import {moderateScale, scaleHeight} from '../../utils/dimensions';
 import {colors} from '../../utils/LightTheme';
 import {useRoute} from '@react-navigation/native';
+import {contents} from '../../context';
 
 const QRcodeForWhatsApp = () => {
   const route = useRoute();
@@ -27,38 +28,34 @@ const QRcodeForWhatsApp = () => {
   const [qrValue, setQrValue] = useState('');
   const viewShotRef = useRef(null);
 
-  // Generate QR Code for WhatsApp or SMS
   const generateQRCode = () => {
     if (!phoneNumber) {
-      Alert.alert('Error', 'Please enter a phone number.');
+      Alert.alert(contents('Error'), contents('EnterPhoneNumber'));
       return;
     }
 
     const formattedPhone = `+${callingCode}${phoneNumber.replace(/\D/g, '')}`;
 
     if (mode === 'whatsapp') {
-      // Generate WhatsApp QR Code
       const whatsappLink = `https://wa.me/${formattedPhone}${
         message ? `?text=${encodeURIComponent(message)}` : ''
       }`;
       setQrValue(whatsappLink);
     } else {
-      // Generate SMS QR Code
       const smsLink = `SMSTO:${formattedPhone}:${message}`;
       setQrValue(smsLink);
     }
   };
 
-  // Share QR Code
   const shareQRCode = async () => {
     if (!qrValue) {
-      Alert.alert('Error', 'Generate the QR code first.');
+      Alert.alert(contents('Error'), contents('GenerateQRCodeFirst'));
       return;
     }
     try {
       const uri = await captureQR();
       const options = {
-        title: 'Share QR Code',
+        title: contents('ShareQRCodeTitle'),
         url: `file://${uri}`,
         type: 'image/png',
       };
@@ -68,7 +65,6 @@ const QRcodeForWhatsApp = () => {
     }
   };
 
-  // Capture QR Code for Download
   const captureQR = async () => {
     return new Promise((resolve, reject) => {
       if (viewShotRef.current) {
@@ -79,22 +75,21 @@ const QRcodeForWhatsApp = () => {
             .catch(reject);
         });
       } else {
-        reject('ViewShot ref not found');
+        reject(contents('ViewShotRefNotFound'));
       }
     });
   };
 
-  // Download QR Code
   const downloadQRCode = async () => {
     if (!qrValue) {
-      Alert.alert('Error', 'Generate the QR code first.');
+      Alert.alert(contents('Error'), contents('GenerateQRCodeFirst'));
       return;
     }
     try {
       const uri = await captureQR();
-      Alert.alert('Success', `QR Code saved to: ${uri}`);
+      Alert.alert(contents('Success'), `${contents('QRCodeSaved')}: ${uri}`);
     } catch (error) {
-      console.error('Error saving QR Code:', error);
+      console.error(contents('DownloadQRError'), error);
     }
   };
 
@@ -102,11 +97,10 @@ const QRcodeForWhatsApp = () => {
     <View style={styles.container}>
       <Text style={styles.heading}>
         {mode === 'sms'
-          ? 'SMS QR Code Generator'
-          : 'WhatsApp QR Code Generator'}
+          ? contents('SMSQRCodeGenerator')
+          : contents('WhatsAppQRCodeGenerator')}
       </Text>
 
-      {/* Country Picker & Phone Input */}
       <View style={styles.phoneContainer}>
         <CountryPicker
           withCallingCode
@@ -123,27 +117,26 @@ const QRcodeForWhatsApp = () => {
         <Text style={styles.callingCode}>+{callingCode}</Text>
         <TextInput
           style={styles.phoneInput}
-          placeholder="Enter phone number"
+          placeholder={contents('EnterPhoneNumber')}
           keyboardType="phone-pad"
           value={phoneNumber}
           onChangeText={setPhoneNumber}
         />
       </View>
 
-      {/* Message Input */}
       <TextInput
         style={styles.input}
         placeholder={
           mode === 'sms'
-            ? 'Enter SMS message'
-            : 'Enter WhatsApp message (optional)'
+            ? contents('EnterSMSMessage')
+            : contents('EnterWhatsAppMessage')
         }
         value={message}
         onChangeText={setMessage}
       />
 
       <TouchableOpacity style={styles.button} onPress={generateQRCode}>
-        <Text style={styles.buttonText}>Generate QR Code</Text>
+        <Text style={styles.buttonText}>{contents('GenerateQRCode')}</Text>
       </TouchableOpacity>
 
       {qrValue ? (
@@ -153,11 +146,11 @@ const QRcodeForWhatsApp = () => {
           </ViewShot>
 
           <TouchableOpacity style={styles.button} onPress={shareQRCode}>
-            <Text style={styles.buttonText}>Share QR Code</Text>
+            <Text style={styles.buttonText}>{contents('ShareQRCode')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.button} onPress={downloadQRCode}>
-            <Text style={styles.buttonText}>Download QR Code</Text>
+            <Text style={styles.buttonText}>{contents('DownloadQRCode')}</Text>
           </TouchableOpacity>
         </View>
       ) : null}

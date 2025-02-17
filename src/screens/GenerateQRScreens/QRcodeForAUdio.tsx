@@ -6,21 +6,20 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
-  PermissionsAndroid,
-  Platform,
 } from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import DocumentPicker from 'react-native-document-picker';
 import QRCode from 'react-native-qrcode-svg';
 import ViewShot from 'react-native-view-shot';
 import Share from 'react-native-share';
-import CameraRoll from '@react-native-camera-roll/camera-roll';
 import axios from 'axios';
 import {moderateScale, scaleHeight} from '../../utils/dimensions';
 import {colors} from '../../utils/LightTheme';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Header from '../../components/commonComponents/Header';
 import {useNavigation} from '@react-navigation/native';
+import {contents} from '../../context';
+
 const QRCodeForAudio = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -36,14 +35,14 @@ const QRCodeForAudio = () => {
       const res = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.allFiles],
       });
-      console.log('File selected:', res);
+      console.log(contents('FileSelected'), res);
       setFileUri(res.uri);
       uploadFileToGoFile(res);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
-        Alert.alert('Cancelled', 'File selection was cancelled');
+        Alert.alert(contents('Cancelled'), contents('FileSelectionCancelled'));
       } else {
-        Alert.alert('Error', 'An error occurred while picking the file');
+        Alert.alert(contents('Error'), contents('FilePickError'));
         console.error(err);
       }
     }
@@ -67,13 +66,13 @@ const QRCodeForAudio = () => {
 
       if (response.data.status === 'ok') {
         const fileUrl = response.data.data.downloadPage;
-        console.log('Uploaded successfully:', fileUrl);
+        console.log(contents('UploadSuccess'), fileUrl);
         setDownloadUrl(fileUrl);
       } else {
-        throw new Error('Failed to upload file');
+        throw new Error(contents('UploadFailed'));
       }
     } catch (error) {
-      Alert.alert('Error', 'File upload failed.');
+      Alert.alert(contents('Error'), contents('UploadError'));
       console.error(error);
     }
     setUploading(false);
@@ -81,7 +80,7 @@ const QRCodeForAudio = () => {
 
   const shareQRCode = async () => {
     if (!downloadUrl) {
-      Alert.alert('Error', 'Upload a file first to generate QR code.');
+      Alert.alert(contents('Error'), contents('UploadFirstError'));
       return;
     }
 
@@ -90,13 +89,13 @@ const QRCodeForAudio = () => {
       if (!uri) return;
 
       const options = {
-        title: 'Share QR Code',
+        title: contents('ShareQRCodeTitle'),
         url: `file://${uri}`,
         type: 'image/png',
       };
       await Share.open(options);
     } catch (error) {
-      console.error('Share error:', error);
+      console.error(contents('ShareError'), error);
     }
   };
 
@@ -105,31 +104,29 @@ const QRCodeForAudio = () => {
       <Header
         title={
           mode === 'Audio'
-            ? 'Generate QR code for audio'
-            : 'Generate QR code for PPTX'
+            ? contents('GenerateQRaudio')
+            : contents('GenerateQRcodeforPPTX')
         }
         onBackPress={() => navigation.goBack()}
-        onBackLongPress={() =>
-          Alert.alert('Long Press', 'You held the back button!')
-        }
+        onBackLongPress={() => Alert.alert(contents('LongPressbutton'))}
         rightComponent={null}
       />
       <Text style={styles.heading}>
         {mode === 'Audio'
-          ? 'Audio QR Code Generator'
-          : 'PPTX QR Code Generator'}
+          ? contents('AudioQRCodeGenerator')
+          : contents('PPTXQRCodeGenerator')}
       </Text>
 
       <TextInput
         style={styles.input}
-        placeholder="Name your QR (optional)"
+        placeholder={contents('NameYourQR')}
         value={qrName}
         onChangeText={setQrName}
       />
 
       <TouchableOpacity style={styles.uploadButton} onPress={pickFile}>
         <Icon name="upload" size={20} color={colors.primary} />
-        <Text style={styles.uploadButtonText}>Upload File</Text>
+        <Text style={styles.uploadButtonText}>{contents('UploadFile')}</Text>
       </TouchableOpacity>
 
       {uploading && <ActivityIndicator size="large" color={colors.primary} />}
@@ -139,14 +136,14 @@ const QRCodeForAudio = () => {
           <ViewShot ref={viewShotRef} options={{format: 'png', quality: 1}}>
             <QRCode value={downloadUrl} size={200} />
           </ViewShot>
-          <Text style={styles.qrText}>Scan to download the file</Text>
+          <Text style={styles.qrText}>{contents('ScanToDownload')}</Text>
 
           <TouchableOpacity style={styles.button} onPress={shareQRCode}>
-            <Text style={styles.buttonText}>Share QR Code</Text>
+            <Text style={styles.buttonText}>{contents('ShareQRCode')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.button} onPress={() => {}}>
-            <Text style={styles.buttonText}>Download QR Code</Text>
+            <Text style={styles.buttonText}>{contents('DownloadQRCode')}</Text>
           </TouchableOpacity>
         </View>
       )}

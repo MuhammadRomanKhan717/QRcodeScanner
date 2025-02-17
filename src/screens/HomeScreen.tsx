@@ -5,11 +5,13 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import NavigationCard from '../components/homeComponents/NavigationCard';
 import {moderateScale} from '../utils/dimensions';
-import {contents} from '../context';
+import {contents, useLanguage} from '../context';
+import i18n from '../i18n';
 import {colors} from '../utils/LightTheme';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const {language} = useLanguage();
 
   const cardsData = [
     {
@@ -66,11 +68,11 @@ const HomeScreen = () => {
           <MaterialCommunityIcons name="menu" size={30} color="black" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{contents('home')}</Text>
+        {/* Translation applied */}
       </View>
-
       {/* Welcome Text */}
       <Text style={styles.title}>{contents('welcome')}</Text>
-
+      {/* Translation applied */}
       {/* Navigation Grid */}
       <FlatList
         data={cardsData}
@@ -90,7 +92,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: colors.white,
-    // paddingTop: moderateScale(40),
   },
   header: {
     flexDirection: 'row',
