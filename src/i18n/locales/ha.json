@@ -1,0 +1,25 @@
+// Hausa(Nigerian)
+{
+    "home": "Gida",
+    "welcome": "Barka da zuwa",
+    "changeLanguage": "Canja yare",
+    "selectLanguage": "Zaɓi yare",
+    "english": "Turanci",
+    "urdu": "Urdu",
+    "hindi": "Hindi",
+    "spanish": "Sifaniyanci",
+    "german": "Jamusanci",
+    "russian": "Rashanci",
+    "french": "Faransanci",
+    "italian": "Italiyanci",
+    "arabic": "Larabci",
+    "chinese": "Sinanci",
+    "mandarin": "Mandarin",
+    "japanese": "Japananci",
+    "korean": "Koreyanci",
+    "bengali": "Bengali",
+    "portuguese": "Burtuganci",
+    "indonesian": "Indonesiyanci",
+    "nigerian": "Najeriya",
+    "hausa": "Hausa"
+}

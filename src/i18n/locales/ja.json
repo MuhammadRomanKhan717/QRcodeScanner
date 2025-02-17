@@ -1,0 +1,19 @@
+// Japanese
+{
+    "home": "ホーム",
+    "welcome": "ようこそ",
+    "changeLanguage": "言語を変更",
+    "selectLanguage": "言語を選択",
+    "english": "英語",
+    "urdu": "ウルドゥー語",
+    "hindi": "ヒンディー語",
+    "spanish": "スペイン語",
+    "german": "ドイツ語",
+    "russian": "ロシア語",
+    "french": "フランス語",
+    "italian": "イタリア語",
+    "arabic": "アラビア語",
+    "chinese": "中国語",
+    "japanese": "日本語",
+    "korean": "韓国語"
+}

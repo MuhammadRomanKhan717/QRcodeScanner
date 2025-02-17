@@ -1,5 +1,16 @@
+// (French)
 {
     "home": "Accueil",
-    "wellCome": "Bienvenue",
-    "changeLanguage": "Changer de langue"
+    "welcome": "Bienvenue",
+    "changeLanguage": "Changer de langue",
+    "selectLanguage": "Sélectionner la langue",
+    "english": "Anglais",
+    "urdu": "Ourdou",
+    "hindi": "Hindi",
+    "spanish": "Espagnol",
+    "german": "Allemand",
+    "russian": "Russe",
+    "french": "Français",
+    "italian": "Italien"
 }
+

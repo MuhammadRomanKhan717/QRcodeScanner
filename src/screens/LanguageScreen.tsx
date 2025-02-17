@@ -1,24 +1,46 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import Header from '../components/commonComponents/Header';
-import {contents, useLanguage} from '../context';
+import {useNavigation} from '@react-navigation/native';
 
 const languages = [
-  {id: 'en', name: contents('english')},
-  {id: 'ur', name: contents('urdu')},
-  {id: 'es', name: contents('spanish')},
-  {id: 'fr', name: contents('french')},
+  {id: '1', name: 'English'},
+  {id: '10', name: 'Chinese'},
+  {id: '3', name: 'Hindi'},
+  {id: '4', name: 'Spanish'},
+  {id: '9', name: 'Arabic'},
+  {id: '7', name: 'French'},
+  {id: '14', name: 'Portuguese'},
+  {id: '6', name: 'Russian'},
+  {id: '13', name: 'Bengali'},
+  {id: '2', name: 'Urdu'},
+  {id: '15', name: 'Indonesian'},
+  {id: '11', name: 'Japanese'},
+  {id: '5', name: 'German'},
+  {id: '12', name: 'Korean'},
+  {id: '17', name: 'Turkish'},
+  {id: '8', name: 'Italian'},
+  {id: '16', name: 'Nigerian'},
 ];
 
 const LanguageScreen = () => {
-  const {language, setLanguage} = useLanguage();
+  const navigation = useNavigation();
+  const [selectedLanguage, setSelectedLanguage] = useState<string | null>(
+    'English',
+  );
+
+  const handleLanguageSelect = (language: string) => {
+    setSelectedLanguage(language);
+  };
 
   return (
     <View style={styles.container}>
-      <Header title={contents('ChangeLaguage')} showBackButton={true} />
-
-      <Text style={styles.heading}>{contents('selectLaguage')}</Text>
-
+      <Header
+        title="Change Language"
+        onBackPress={() => navigation.goBack()}
+        rightComponent={null}
+      />
+      <Text style={styles.heading}>Select Your Preferred Language:</Text>
       <FlatList
         data={languages}
         keyExtractor={item => item.id}
@@ -26,13 +48,13 @@ const LanguageScreen = () => {
           <TouchableOpacity
             style={[
               styles.languageItem,
-              language === item.id && styles.selectedItem,
+              selectedLanguage === item.name && styles.selectedItem,
             ]}
-            onPress={() => setLanguage(item.id)}>
+            onPress={() => handleLanguageSelect(item.name)}>
             <Text
               style={[
                 styles.languageText,
-                language === item.id && styles.selectedText,
+                selectedLanguage === item.name && styles.selectedText,
               ]}>
               {item.name}
             </Text>

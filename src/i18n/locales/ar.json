@@ -1,5 +1,18 @@
+// arabic
 {
-    "home": "گھر",
-    "wellCome": "خوش آمدید",
-    "changeLanguage": "زبان تبدیل کریں"
+    "home": "الرئيسية",
+    "welcome": "مرحبا",
+    "changeLanguage": "تغيير اللغة",
+    "selectLanguage": "اختر اللغة",
+    "english": "الإنجليزية",
+    "urdu": "الأردية",
+    "hindi": "الهندية",
+    "spanish": "الإسبانية",
+    "german": "الألمانية",
+    "russian": "الروسية",
+    "french": "الفرنسية",
+    "italian": "الإيطالية",
+    "arabic": "العربية",
+    "chinese": "الصينية"
 }
+

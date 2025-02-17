@@ -1,0 +1,21 @@
+// Bengali 
+{
+    "home": "হোম",
+    "welcome": "স্বাগতম",
+    "changeLanguage": "ভাষা পরিবর্তন করুন",
+    "selectLanguage": "ভাষা নির্বাচন করুন",
+    "english": "ইংরেজি",
+    "urdu": "উর্দু",
+    "hindi": "হিন্দি",
+    "spanish": "স্প্যানিশ",
+    "german": "জার্মান",
+    "russian": "রাশিয়ান",
+    "french": "ফরাসি",
+    "italian": "ইতালীয়",
+    "arabic": "আরবি",
+    "chinese": "চীনা",
+    "mandarin": "ম্যান্ডারিন",
+    "japanese": "জাপানি",
+    "korean": "কোরিয়ান",
+    "bengali": "বাংলা"
+}
