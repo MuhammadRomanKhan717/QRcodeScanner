@@ -24,6 +24,7 @@ import TermsScreen from '../screens/TermsScreen';
 import AboutScreen from '../screens/AboutScreen';
 import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
 import {contents} from '../context';
+import GenerateBarCodeForEmail from '../screens/GenerateBarScreens/GenerateBarCodeForEmail';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -90,6 +91,11 @@ const StackNavigator = () => {
       <Stack.Screen
         name="QRCodeForVCard"
         component={QRCodeForVCard}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="GenerateBarCodeForEmail"
+        component={GenerateBarCodeForEmail}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

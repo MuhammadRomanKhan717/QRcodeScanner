@@ -6,11 +6,40 @@ import {
   StyleSheet,
   Button,
   ScrollView,
+  FlatList,
+  TouchableOpacity,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Barcode from 'react-native-barcode-svg';
+import Animated, {FadeIn} from 'react-native-reanimated';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {moderateScale} from '../utils/dimensions';
+import {contents} from '../context';
+import Header from '../components/commonComponents/Header';
+import {colors} from '../utils/LightTheme';
 
-const BarcodeGenerator = () => {
-  const [barcodeValues, setBarcodeValues] = useState([]);
+// Navigation type definition
+type RootStackParamList = {
+  BarcodeScreen: undefined;
+};
+type NavigationProp = StackNavigationProp<RootStackParamList>;
+
+// Data for Barcode options
+const barcodeData = [
+  {
+    id: '1',
+    name: 'Product Code',
+    icon: 'barcode',
+    screen: 'GenerateBarCodeForEmail',
+  },
+  {id: '2', name: 'Inventory Code', icon: 'barcode', screen: 'BarcodeScreen'},
+  {id: '3', name: 'Shipping Label', icon: 'barcode', screen: 'BarcodeScreen'},
+];
+
+const GenerateBarCodesScreen: React.FC = () => {
+  const navigation = useNavigation<NavigationProp>();
+  const [barcodeValues, setBarcodeValues] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
 
   const generateBarcode = () => {
@@ -20,24 +49,31 @@ const BarcodeGenerator = () => {
     }
   };
 
+  const renderBarcodeItem = ({item}: {item: any}) => (
+    <Animated.View entering={FadeIn.duration(500)}>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => navigation.navigate(item.screen)}>
+        <Icon name={item.icon} size={24} color="#4CAF50" />
+        <Text style={styles.text}>{item.name}</Text>
+      </TouchableOpacity>
+    </Animated.View>
+  );
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Barcode Generator</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter value"
-        value={inputValue}
-        onChangeText={setInputValue}
+      <Header
+        title={contents('GenerateBarcodes')}
+        onBackPress={() => navigation.goBack()}
+        rightComponent={null}
       />
-      <Button title="Generate Barcode" onPress={generateBarcode} />
-      <ScrollView style={styles.barcodeList}>
-        {barcodeValues.map((value, index) => (
-          <View key={index} style={styles.barcodeContainer}>
-            <Barcode value={value} format="CODE128" />
-            <Text>{value}</Text>
-          </View>
-        ))}
-      </ScrollView>
+      <FlatList
+        data={barcodeData}
+        renderItem={renderBarcodeItem}
+        keyExtractor={item => item.id}
+        numColumns={2}
+        columnWrapperStyle={styles.row}
+      />
     </View>
   );
 };
@@ -45,10 +81,35 @@ const BarcodeGenerator = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 20,
+    backgroundColor: colors.white,
+    padding: moderateScale(10),
+  },
+  heading: {
+    fontSize: moderateScale(18),
+    fontWeight: 'bold',
+    marginBottom: moderateScale(15),
+    color: '#333',
+  },
+  row: {
+    justifyContent: 'space-between',
+    marginBottom: moderateScale(10),
+  },
+  card: {
+    backgroundColor: colors.white,
+    borderRadius: moderateScale(12),
+    paddingVertical: moderateScale(15),
+    paddingHorizontal: moderateScale(20),
+    alignItems: 'center',
+    elevation: 15,
+    width: 130,
+    margin: moderateScale(10),
+  },
+  text: {
+    fontSize: moderateScale(14),
+    fontWeight: '600',
+    color: '#4A4A4A',
+    textAlign: 'center',
   },
   title: {
     fontSize: 18,
@@ -76,4 +137,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BarcodeGenerator;
+export default GenerateBarCodesScreen;

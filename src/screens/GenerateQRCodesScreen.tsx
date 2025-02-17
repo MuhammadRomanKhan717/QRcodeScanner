@@ -14,6 +14,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import {moderateScale, scaleHeight, scaleWidth} from '../utils/dimensions';
 import {contents} from '../context';
+import Header from '../components/commonComponents/Header';
+import {colors} from '../utils/LightTheme';
 
 // Define the type for navigation
 type RootStackParamList = {
@@ -306,9 +308,14 @@ const GenerateQRCodesScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Animated.Text entering={FadeIn.duration(500)} style={styles.heading}>
-        {contents('AllQRCodes')}
-      </Animated.Text>
+      <Header
+        title={contents('AllQRCodes')}
+        onBackPress={() => navigation.goBack()}
+        rightComponent={null}
+      />
+      {/* <Animated.Text entering={FadeIn.duration(500)} style={styles.heading}>
+       
+      </Animated.Text> */}
       <FlatList
         data={data}
         renderItem={renderItem}
@@ -326,7 +333,7 @@ const styles = {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#ddfee3',
+    backgroundColor: colors.white,
     padding: moderateScale(10),
   },
   heading: {
@@ -340,7 +347,7 @@ const styles = {
     marginBottom: moderateScale(10),
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: moderateScale(12),
     paddingVertical: moderateScale(15),
     paddingHorizontal: moderateScale(20),
@@ -350,7 +357,7 @@ const styles = {
     shadowOpacity: 0.2,
     shadowRadius: moderateScale(10),
     shadowOffset: {width: 0, height: moderateScale(4)},
-    elevation: 6,
+    elevation: 15,
     width: scaleWidth(130),
     minHeight: scaleHeight(25),
     margin: moderateScale(10),

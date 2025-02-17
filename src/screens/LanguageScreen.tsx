@@ -5,6 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 // import {useLanguage} from '../context'; // Import useLanguage hook
 import {ContentLanguage} from '../i18n';
 import {contents, useLanguage} from '../context';
+import RNRestart from 'react-native-restart';
 
 const languages = [
   {id: '1', name: 'English', code: ContentLanguage.English},
@@ -38,7 +39,9 @@ const LanguageScreen = () => {
   const handleLanguageSelect = (langCode: ContentLanguage) => {
     setSelectedLanguage(langCode);
     setLanguageInApp(langCode);
-    navigation.goBack();
+    setTimeout(() => {
+      RNRestart.restart();
+    }, 100); // Add a small delay before restarting
   };
 
   return (
