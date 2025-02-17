@@ -36,7 +36,7 @@ const NavigationCard: React.FC<NavigationCardProps> = ({
 }) => {
   const navigation = useNavigation();
   const animationType =
-    index % 2 === 0 ? SlideInLeft.duration(500) : SlideInRight.duration(500);
+    index % 2 === 0 ? SlideInLeft.duration(1000) : SlideInRight.duration(1000);
 
   return (
     <Animated.View entering={animationType}>
@@ -65,12 +65,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: moderateScale(10),
+    shadowOpacity: 0.5,
+    shadowRadius: moderateScale(5),
     shadowOffset: {width: 0, height: moderateScale(4)},
-    elevation: 6,
+    elevation: 15,
     width: scaleWidth(130),
-    minHeight: scaleHeight(25),
+    minHeight: scaleHeight(5),
     margin: moderateScale(10),
   },
   iconContainer: {

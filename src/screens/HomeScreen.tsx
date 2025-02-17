@@ -1,12 +1,12 @@
 import React from 'react';
 import {StyleSheet, Text, View, FlatList, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import NavigationCard from '../components/homeComponents/NavigationCard';
 import {moderateScale} from '../utils/dimensions';
-import Header from '../components/commonComponents/Header';
 import {contents} from '../context';
+import {colors} from '../utils/LightTheme';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -45,6 +45,7 @@ const HomeScreen = () => {
       text: contents('scanBarCodes'),
     },
   ];
+
   const renderItem = ({item}) => (
     <NavigationCard
       onPress={() => navigation.navigate(item.screen)}
@@ -57,18 +58,20 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Header
-        title={contents('home')}
-        showBackButton={false}
-        rightComponent={
-          <TouchableOpacity
-            onPress={() => navigation.openDrawer()}
-            style={styles.iconButton}>
-            <MaterialCommunityIcons name="menu" size={30} color="black" />
-          </TouchableOpacity>
-        }
-      />
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => navigation.openDrawer()}
+          style={styles.menuButton}>
+          <MaterialCommunityIcons name="menu" size={30} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>{contents('home')}</Text>
+      </View>
+
+      {/* Welcome Text */}
       <Text style={styles.title}>{contents('welcome')}</Text>
+
+      {/* Navigation Grid */}
       <FlatList
         data={cardsData}
         numColumns={2}
@@ -85,17 +88,38 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.white,
+    // paddingTop: moderateScale(40),
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    paddingVertical: moderateScale(10),
+    backgroundColor: colors.white,
+    elevation: 3,
+    shadowColor: colors.black,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  menuButton: {
+    position: 'absolute',
+    left: moderateScale(15),
+    padding: moderateScale(10),
+  },
+  headerTitle: {
+    fontSize: moderateScale(22),
+    fontWeight: 'bold',
+    color: colors.blackText,
   },
   title: {
     fontSize: moderateScale(30),
     fontWeight: 'bold',
+    marginTop: moderateScale(30),
     marginBottom: moderateScale(30),
-    color: '#333',
-  },
-  iconButton: {
-    padding: 10,
+    color: colors.blackText,
   },
 });
