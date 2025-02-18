@@ -17,6 +17,7 @@ import {moderateScale, scaleHeight} from '../../utils/dimensions';
 import {colors} from '../../utils/LightTheme';
 import Header from '../../components/commonComponents/Header';
 import {contents} from '../../context';
+import ShareDownloadComponent from '../../components/generateQRCodesComponent/ShareDownloadComponent';
 
 const QRcodeForEmail = () => {
   const navigation = useNavigation();
@@ -127,30 +128,7 @@ const QRcodeForEmail = () => {
           <TouchableOpacity style={styles.button} onPress={generateQRCode}>
             <Text style={styles.buttonText}>{contents('GenerateQRCode')}</Text>
           </TouchableOpacity>
-
-          {qrValue ? (
-            <View style={styles.qrContainer}>
-              <ViewShot ref={viewShotRef} options={{format: 'png', quality: 1}}>
-                <QRCode value={qrValue} size={200} />
-              </ViewShot>
-
-              <TouchableOpacity
-                style={styles.shareButton}
-                onPress={shareQRCode}>
-                <Text style={styles.shareButtonText}>
-                  {contents('ShareQRCode')}
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.downloadButton}
-                onPress={downloadQRCode}>
-                <Text style={styles.downloadButtonText}>
-                  {contents('DownloadQRCode')}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          ) : null}
+          {qrValue && <ShareDownloadComponent downloadUrl={qrValue} />}
         </View>
       </ScrollView>
     </View>

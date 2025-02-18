@@ -16,6 +16,7 @@ import {moderateScale, scaleHeight} from '../../utils/dimensions';
 import {colors} from '../../utils/LightTheme';
 import {useRoute} from '@react-navigation/native';
 import {contents} from '../../context';
+import ShareDownloadComponent from '../../components/generateQRCodesComponent/ShareDownloadComponent';
 
 const QRcodeForWhatsApp = () => {
   const route = useRoute();
@@ -138,22 +139,7 @@ const QRcodeForWhatsApp = () => {
       <TouchableOpacity style={styles.button} onPress={generateQRCode}>
         <Text style={styles.buttonText}>{contents('GenerateQRCode')}</Text>
       </TouchableOpacity>
-
-      {qrValue ? (
-        <View style={styles.qrContainer}>
-          <ViewShot ref={viewShotRef} options={{format: 'png', quality: 1}}>
-            <QRCode value={qrValue} size={200} />
-          </ViewShot>
-
-          <TouchableOpacity style={styles.button} onPress={shareQRCode}>
-            <Text style={styles.buttonText}>{contents('ShareQRCode')}</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button} onPress={downloadQRCode}>
-            <Text style={styles.buttonText}>{contents('DownloadQRCode')}</Text>
-          </TouchableOpacity>
-        </View>
-      ) : null}
+      {qrValue && <ShareDownloadComponent downloadUrl={qrValue} />}
     </View>
   );
 };

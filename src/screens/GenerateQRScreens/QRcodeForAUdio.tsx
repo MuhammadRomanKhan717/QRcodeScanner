@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Header from '../../components/commonComponents/Header';
 import {useNavigation} from '@react-navigation/native';
 import {contents} from '../../context';
+import ShareDownloadComponent from '../../components/generateQRCodesComponent/ShareDownloadComponent';
 
 const QRCodeForAudio = () => {
   const navigation = useNavigation();
@@ -130,23 +131,7 @@ const QRCodeForAudio = () => {
       </TouchableOpacity>
 
       {uploading && <ActivityIndicator size="large" color={colors.primary} />}
-
-      {downloadUrl && (
-        <View style={styles.qrContainer}>
-          <ViewShot ref={viewShotRef} options={{format: 'png', quality: 1}}>
-            <QRCode value={downloadUrl} size={200} />
-          </ViewShot>
-          <Text style={styles.qrText}>{contents('ScanToDownload')}</Text>
-
-          <TouchableOpacity style={styles.button} onPress={shareQRCode}>
-            <Text style={styles.buttonText}>{contents('ShareQRCode')}</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button} onPress={() => {}}>
-            <Text style={styles.buttonText}>{contents('DownloadQRCode')}</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      {downloadUrl && <ShareDownloadComponent downloadUrl={downloadUrl} />}
     </View>
   );
 };
