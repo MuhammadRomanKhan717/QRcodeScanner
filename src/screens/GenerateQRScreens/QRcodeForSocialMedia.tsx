@@ -156,33 +156,22 @@ const QRcodeForSocialMedia = () => {
         {/* Show QR Code */}
         {qrGenerated && link && (
           <>
-            {' '}
             <View style={styles.qrContainer}>
-              {' '}
               <ViewShot ref={viewShotRef} options={{format: 'png', quality: 1}}>
-                {' '}
-                <QRCode value={link} size={200} />{' '}
-              </ViewShot>{' '}
+                <QRCode value={link} size={200} />
+              </ViewShot>
               <Text style={styles.qrText}>
-                {' '}
-                {contents('ScanToVisit')} {mode}{' '}
-              </Text>{' '}
-            </View>{' '}
+                {contents('ScanToVisit')} {mode}
+              </Text>
+            </View>
             <View style={styles.row}>
-              {' '}
               <TouchableOpacity style={styles.button} onPress={downloadQRCode}>
-                {' '}
-                <Text style={styles.buttonText}>
-                  {contents('DownloadQR')}
-                </Text>{' '}
-              </TouchableOpacity>{' '}
+                <Text style={styles.buttonText}>{contents('DownloadQR')}</Text>
+              </TouchableOpacity>
               <TouchableOpacity style={styles.button} onPress={shareQRCode}>
-                {' '}
-                <Text style={styles.buttonText}>
-                  {contents('ShareQR')}
-                </Text>{' '}
-              </TouchableOpacity>{' '}
-            </View>{' '}
+                <Text style={styles.buttonText}>{contents('ShareQR')}</Text>
+              </TouchableOpacity>
+            </View>
           </>
         )}
       </ScrollView>

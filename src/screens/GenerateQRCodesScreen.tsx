@@ -27,6 +27,7 @@ type RootStackParamList = {
   QRcodeForMap: undefined;
   QRcodeForSocialMedia: undefined;
   QRCodeForVCard: undefined;
+  GenerateCustomQRCode: undefined;
 };
 
 // Define the type for the navigation prop
@@ -82,6 +83,13 @@ const data: QRCodeItem[] = [
     name: contents('excel'),
     icon: 'microsoft-excel',
     screen: 'QRCodeForAudio',
+    mode: 'excel',
+  },
+  {
+    id: '29',
+    name: contents('custom'),
+    icon: 'microsoft-excel',
+    screen: 'GenerateCustomQRCode',
     mode: 'excel',
   },
   {
