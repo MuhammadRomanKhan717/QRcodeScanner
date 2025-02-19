@@ -14,6 +14,7 @@ interface ShareDownloadComponentProps {
 
 const ShareDownloadComponent: React.FC<ShareDownloadComponentProps> = ({
   downloadUrl,
+  isActive,
 }) => {
   const viewShotRef = useRef<ViewShot>(null);
 

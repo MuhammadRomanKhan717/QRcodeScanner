@@ -8,21 +8,26 @@ import {
   PermissionsAndroid,
   Platform,
   StyleSheet,
+  ScrollView,
 } from 'react-native';
 import Snackbar from 'react-native-snackbar';
 import QRCode from 'react-native-qrcode-svg';
 import ViewShot from 'react-native-view-shot';
 import Share from 'react-native-share';
 import CameraRoll from '@react-native-camera-roll/camera-roll';
-import {useRoute} from '@react-navigation/native';
-import {moderateScale} from '../../utils/dimensions';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {moderateScale, scaleWidth} from '../../utils/dimensions';
 import {colors} from '../../utils/LightTheme';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Animated, {FadeIn, BounceIn} from 'react-native-reanimated';
 import {contents} from '../../context';
+import Header from '../../components/commonComponents/Header';
 
 const QRcodeForSocialMedia = () => {
+  const navigation = useNavigation();
   const route = useRoute();
   const {mode} = route.params || {mode: 'Facebook'};
+
   const [link, setLink] = useState('');
   const [name, setName] = useState('');
   const [qrGenerated, setQrGenerated] = useState(false);
@@ -100,79 +105,107 @@ const QRcodeForSocialMedia = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>
-        {mode} {contents('QRCodeGenerator')}
-      </Text>
-      <View style={styles.inputContainer}>
-        <Icon name={mode.toLowerCase()} size={20} color={colors.grey600} />
+      <Header
+        title={`${mode} ${contents('QRCodeGenerator')}`}
+        onBackPress={() => navigation.goBack()}
+      />
 
-        <TextInput
-          style={styles.input}
-          placeholder={contents('EnterLink')}
-          value={link}
-          onChangeText={setLink}
-        />
-      </View>
-      <View style={styles.inputWrapper}>
-        <TextInput
-          style={styles.input}
-          placeholder={contents('NameYourQR')}
-          value={name}
-          onChangeText={setName}
-        />
-      </View>
-      {!qrGenerated && link && (
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            if (!link) {
-              showSnackbar('EnterValidLink');
-              return;
-            }
-            setQrGenerated(true);
-            showSnackbar('QRGenerated');
-          }}>
-          <Text style={styles.buttonText}>{contents('GenerateQR')}</Text>
-        </TouchableOpacity>
-      )}
-      {qrGenerated && link && (
-        <>
-          <View style={styles.qrContainer}>
-            <ViewShot ref={viewShotRef} options={{format: 'png', quality: 1}}>
-              <QRCode value={link} size={200} />
-            </ViewShot>
-            <Text style={styles.qrText}>
-              {contents('ScanToVisit')}
-              {mode}
-            </Text>
-          </View>
-          <View style={styles.row}>
-            <TouchableOpacity style={styles.button} onPress={downloadQRCode}>
-              <Text style={styles.buttonText}>{contents('DownloadQR')}</Text>
+      <ScrollView contentContainerStyle={styles.wrapper}>
+        <Animated.Text entering={FadeIn.duration(500)} style={styles.title}>
+          {contents('EnterDetailsToGenerateQR')}
+        </Animated.Text>
+
+        {/* Social Media Link Input */}
+        <View style={styles.inputContainer}>
+          <Icon name={mode.toLowerCase()} size={20} color={colors.grey600} />
+          <TextInput
+            style={styles.input}
+            placeholder={contents('EnterLink')}
+            value={link}
+            onChangeText={setLink}
+          />
+        </View>
+
+        {/* QR Name Input */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder={contents('NameYourQR')}
+            value={name}
+            onChangeText={setName}
+          />
+        </View>
+        {/* Generate QR Button */}
+        {!qrGenerated && link && (
+          <Animated.View entering={BounceIn.duration(700)}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                if (!link) {
+                  showSnackbar('EnterValidLink');
+                  return;
+                }
+                setQrGenerated(true);
+                showSnackbar('QRGenerated');
+              }}>
+              <Text style={styles.buttonText}>{contents('GenerateQR')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={shareQRCode}>
-              <Text style={styles.buttonText}>{contents('ShareQR')}</Text>
-            </TouchableOpacity>
-          </View>
-        </>
-      )}
+          </Animated.View>
+        )}
+
+        {/* Show QR Code */}
+        {qrGenerated && link && (
+          <>
+            {' '}
+            <View style={styles.qrContainer}>
+              {' '}
+              <ViewShot ref={viewShotRef} options={{format: 'png', quality: 1}}>
+                {' '}
+                <QRCode value={link} size={200} />{' '}
+              </ViewShot>{' '}
+              <Text style={styles.qrText}>
+                {' '}
+                {contents('ScanToVisit')} {mode}{' '}
+              </Text>{' '}
+            </View>{' '}
+            <View style={styles.row}>
+              {' '}
+              <TouchableOpacity style={styles.button} onPress={downloadQRCode}>
+                {' '}
+                <Text style={styles.buttonText}>
+                  {contents('DownloadQR')}
+                </Text>{' '}
+              </TouchableOpacity>{' '}
+              <TouchableOpacity style={styles.button} onPress={shareQRCode}>
+                {' '}
+                <Text style={styles.buttonText}>
+                  {contents('ShareQR')}
+                </Text>{' '}
+              </TouchableOpacity>{' '}
+            </View>{' '}
+          </>
+        )}
+      </ScrollView>
     </View>
   );
 };
 
+export default QRcodeForSocialMedia;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: moderateScale(20),
-    backgroundColor: colors.grey100,
+    backgroundColor: colors.white,
   },
-  heading: {
-    fontSize: moderateScale(20),
-    fontWeight: 'bold',
-    color: colors.blackText,
-    marginBottom: moderateScale(20),
+  wrapper: {
+    padding: moderateScale(20),
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: moderateScale(21),
+    fontWeight: '500',
+    textAlign: 'center',
+    marginBottom: moderateScale(10),
   },
   inputContainer: {
     flexDirection: 'row',
@@ -182,41 +215,27 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(10),
     paddingHorizontal: moderateScale(10),
     marginBottom: moderateScale(15),
-    elevation: 4,
-  },
-  inputWrapper: {
-    alignItems: 'center',
-    width: '100%',
-    backgroundColor: colors.white,
-    borderRadius: moderateScale(10),
-    paddingHorizontal: moderateScale(10),
-    marginBottom: moderateScale(15),
-    elevation: 4,
+    elevation: 15,
   },
   input: {
     height: moderateScale(50),
-    width: moderateScale(300),
+    flex: 1,
     fontSize: moderateScale(16),
     paddingLeft: moderateScale(10),
     color: colors.grey800,
   },
   button: {
     backgroundColor: colors.highlightSelected,
-    paddingVertical: moderateScale(15),
-    borderRadius: moderateScale(10),
-    width: '48%',
+    padding: moderateScale(15),
+    borderRadius: moderateScale(5),
     alignItems: 'center',
-    elevation: 6,
+    width: scaleWidth(150),
   },
   buttonText: {
-    color: colors.whiteText,
-    fontSize: moderateScale(16),
-    fontWeight: 'bold',
+    color: '#fff',
+    fontSize: moderateScale(18),
   },
-  qrContainer: {
-    alignItems: 'center',
-    marginTop: moderateScale(20),
-  },
+  qrContainer: {alignItems: 'center', marginTop: moderateScale(20)},
   qrText: {
     fontSize: moderateScale(14),
     color: colors.grey800,
@@ -229,5 +248,3 @@ const styles = StyleSheet.create({
     marginTop: moderateScale(15),
   },
 });
-
-export default QRcodeForSocialMedia;

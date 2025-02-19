@@ -19,7 +19,7 @@ const ScanBarCodesScreen = () => {
   const cameraRef = useRef(null);
   const [scannedData, setScannedData] = useState(null);
   const [showCamera, setShowCamera] = useState(true);
-  const [flashMode, setFlashMode] = useState('auto');
+  const [flashMode, setFlashMode] = useState('off');
 
   const handleBarcodeScan = event => {
     const barcodeValue = event.nativeEvent.codeStringValue;
@@ -35,34 +35,21 @@ const ScanBarCodesScreen = () => {
   };
 
   const searchAmazon = () => {
-    const url = `https://www.amazon.com/s?k=${scannedData.id}`;
     Alert.alert('Redirecting', `Searching for ${scannedData.id} on Amazon`);
   };
 
   const searchGoogle = () => {
-    const url = `https://www.google.com/search?q=${scannedData.id}`;
     Alert.alert('Redirecting', `Searching for ${scannedData.id} on Google`);
   };
 
   return (
     <View style={styles.container}>
-      <Header
-        title="Scan Bar Code"
-        onBackPress={() => navigation.goBack()}
-        onBackLongPress={() =>
-          Alert.alert('Long Press', 'You held the back button!')
-        }
-        rightComponent={
-          !showCamera ? (
-            <TouchableOpacity
-              onPress={handleBarcodeScan}
-              style={styles.iconButton}>
-              <AntDesign name="barcode" size={30} color="black" />
-            </TouchableOpacity>
-          ) : null
-        }
-      />
+      {/* Header Properly Positioned */}
+      <View style={styles.headerContainer}>
+        <Header title="Scan Bar Code" onBackPress={() => navigation.goBack()} />
+      </View>
 
+      {/* QR Scanner Camera */}
       {showCamera ? (
         <View style={styles.cameraContainer}>
           <Camera
@@ -72,7 +59,7 @@ const ScanBarCodesScreen = () => {
             onReadCode={handleBarcodeScan}
             showFrame={true}
             laserColor="red"
-            frameColor="white"
+            frameColor="green"
             style={styles.camera}
             scanBarcode={true}
           />
@@ -85,6 +72,7 @@ const ScanBarCodesScreen = () => {
           </TouchableOpacity>
         </View>
       ) : (
+        /* QR Code Result Screen */
         <View style={styles.resultContainer}>
           <Image source={{uri: scannedData.image}} style={styles.image} />
           <Text style={styles.barcodeText}>Barcode ID: {scannedData.id}</Text>
@@ -109,14 +97,19 @@ export default ScanBarCodesScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#fff',
   },
-  cameraContainer: {
-    position: 'relative',
+  headerContainer: {
     width: '100%',
-    height: '80%',
+    paddingHorizontal: 15,
+    paddingTop: 10,
+    marginBottom: 10, // Ensure space between header and camera
+  },
+  cameraContainer: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   camera: {
     width: '100%',
@@ -124,15 +117,16 @@ const styles = StyleSheet.create({
   },
   flashButton: {
     position: 'absolute',
-    top: 20,
-    right: 20,
+    top: 15,
+    right: 15,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 10,
+    padding: 12,
     borderRadius: 50,
   },
   resultContainer: {
+    flex: 1,
     alignItems: 'center',
-    paddingTop: scaleHeight(20),
+    justifyContent: 'center',
   },
   image: {
     width: 150,
@@ -170,8 +164,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 10,
     fontWeight: 'bold',
-  },
-  iconButton: {
-    padding: 10,
   },
 });

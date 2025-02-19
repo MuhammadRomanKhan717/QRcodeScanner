@@ -6,19 +6,23 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  ScrollView,
 } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import ViewShot from 'react-native-view-shot';
 import Share from 'react-native-share';
 import RNFS from 'react-native-fs';
 import CountryPicker from 'react-native-country-picker-modal';
-import {moderateScale, scaleHeight} from '../../utils/dimensions';
+import {moderateScale} from '../../utils/dimensions';
 import {colors} from '../../utils/LightTheme';
-import {useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import Animated, {FadeIn, BounceIn} from 'react-native-reanimated';
 import {contents} from '../../context';
+import Header from '../../components/commonComponents/Header';
 import ShareDownloadComponent from '../../components/generateQRCodesComponent/ShareDownloadComponent';
 
 const QRcodeForWhatsApp = () => {
+  const navigation = useNavigation();
   const route = useRoute();
   const mode = route.params?.mode || 'whatsapp'; // Default mode is WhatsApp
 
@@ -48,98 +52,74 @@ const QRcodeForWhatsApp = () => {
     }
   };
 
-  const shareQRCode = async () => {
-    if (!qrValue) {
-      Alert.alert(contents('Error'), contents('GenerateQRCodeFirst'));
-      return;
-    }
-    try {
-      const uri = await captureQR();
-      const options = {
-        title: contents('ShareQRCodeTitle'),
-        url: `file://${uri}`,
-        type: 'image/png',
-      };
-      await Share.open(options);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const captureQR = async () => {
-    return new Promise((resolve, reject) => {
-      if (viewShotRef.current) {
-        viewShotRef.current.capture().then(uri => {
-          const newPath = `${RNFS.DocumentDirectoryPath}/QRCode.png`;
-          RNFS.moveFile(uri, newPath)
-            .then(() => resolve(newPath))
-            .catch(reject);
-        });
-      } else {
-        reject(contents('ViewShotRefNotFound'));
-      }
-    });
-  };
-
-  const downloadQRCode = async () => {
-    if (!qrValue) {
-      Alert.alert(contents('Error'), contents('GenerateQRCodeFirst'));
-      return;
-    }
-    try {
-      const uri = await captureQR();
-      Alert.alert(contents('Success'), `${contents('QRCodeSaved')}: ${uri}`);
-    } catch (error) {
-      console.error(contents('DownloadQRError'), error);
-    }
-  };
-
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>
-        {mode === 'sms'
-          ? contents('SMSQRCodeGenerator')
-          : contents('WhatsAppQRCodeGenerator')}
-      </Text>
-
-      <View style={styles.phoneContainer}>
-        <CountryPicker
-          withCallingCode
-          withFlag
-          withFilter
-          withModal
-          withAlphaFilter
-          countryCode={countryCode}
-          onSelect={country => {
-            setCountryCode(country.cca2);
-            setCallingCode(country.callingCode[0]);
-          }}
-        />
-        <Text style={styles.callingCode}>+{callingCode}</Text>
-        <TextInput
-          style={styles.phoneInput}
-          placeholder={contents('EnterPhoneNumber')}
-          keyboardType="phone-pad"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-        />
-      </View>
-
-      <TextInput
-        style={styles.input}
-        placeholder={
+      <Header
+        title={
           mode === 'sms'
-            ? contents('EnterSMSMessage')
-            : contents('EnterWhatsAppMessage')
+            ? contents('SMSQRCodeGenerator')
+            : contents('WhatsAppQRCodeGenerator')
         }
-        value={message}
-        onChangeText={setMessage}
+        onBackPress={() => navigation.goBack()}
       />
 
-      <TouchableOpacity style={styles.button} onPress={generateQRCode}>
-        <Text style={styles.buttonText}>{contents('GenerateQRCode')}</Text>
-      </TouchableOpacity>
-      {qrValue && <ShareDownloadComponent downloadUrl={qrValue} />}
+      <ScrollView contentContainerStyle={styles.wrapper}>
+        <Animated.Text entering={FadeIn.duration(500)} style={styles.title}>
+          {mode === 'sms'
+            ? contents('SMSQRCodeGenerator')
+            : contents('WhatsAppQRCodeGenerator')}
+        </Animated.Text>
+
+        {/* Country Picker & Phone Number */}
+        <View style={styles.phoneContainer}>
+          <CountryPicker
+            withCallingCode
+            withFlag
+            withFilter
+            withModal
+            withAlphaFilter
+            countryCode={countryCode}
+            onSelect={country => {
+              setCountryCode(country.cca2);
+              setCallingCode(country.callingCode[0]);
+            }}
+          />
+          <Text style={styles.callingCode}>+{callingCode}</Text>
+          <TextInput
+            style={styles.phoneInput}
+            placeholder={contents('EnterPhoneNumber')}
+            keyboardType="phone-pad"
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+          />
+        </View>
+
+        {/* Message Input */}
+        <TextInput
+          style={styles.input}
+          placeholder={
+            mode === 'sms'
+              ? contents('EnterSMSMessage')
+              : contents('EnterWhatsAppMessage')
+          }
+          value={message}
+          onChangeText={setMessage}
+        />
+
+        {/* Generate QR Button */}
+        <Animated.View entering={BounceIn.duration(700)}>
+          <TouchableOpacity style={styles.button} onPress={generateQRCode}>
+            <Text style={styles.buttonText}>{contents('GenerateQRCode')}</Text>
+          </TouchableOpacity>
+        </Animated.View>
+
+        {/* Display QR Code */}
+        {qrValue && (
+          <Animated.View entering={BounceIn.duration(700)}>
+            <ShareDownloadComponent downloadUrl={qrValue} isActive={true} />
+          </Animated.View>
+        )}
+      </ScrollView>
     </View>
   );
 };
@@ -149,16 +129,17 @@ export default QRcodeForWhatsApp;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: moderateScale(20),
-    backgroundColor: colors.grey100,
+    backgroundColor: colors.white,
   },
-  heading: {
-    fontSize: moderateScale(20),
-    fontWeight: 'bold',
-    color: colors.blackText,
-    marginBottom: moderateScale(20),
+  wrapper: {
+    padding: moderateScale(20),
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: moderateScale(21),
+    fontWeight: '500',
+    textAlign: 'center',
+    marginBottom: moderateScale(10),
   },
   phoneContainer: {
     flexDirection: 'row',
@@ -178,35 +159,28 @@ const styles = StyleSheet.create({
   },
   phoneInput: {
     flex: 1,
-    height: scaleHeight(50),
     fontSize: moderateScale(16),
-    paddingLeft: moderateScale(10),
+    padding: moderateScale(10),
     color: colors.grey800,
   },
   input: {
     width: '100%',
-    height: scaleHeight(50),
-    backgroundColor: colors.white,
-    borderRadius: moderateScale(10),
-    paddingHorizontal: moderateScale(15),
+    fontSize: moderateScale(18),
+    padding: moderateScale(10),
+    borderWidth: 1,
+    borderColor: colors.grey800,
+    borderRadius: moderateScale(5),
     marginBottom: moderateScale(15),
-    elevation: 4,
   },
   button: {
     backgroundColor: colors.highlightSelected,
-    paddingVertical: moderateScale(15),
-    borderRadius: moderateScale(10),
-    width: '100%',
+    padding: moderateScale(15),
+    borderRadius: moderateScale(5),
     alignItems: 'center',
-    elevation: 6,
+    width: '100%',
   },
   buttonText: {
-    color: colors.whiteText,
-    fontSize: moderateScale(16),
-    fontWeight: 'bold',
-  },
-  qrContainer: {
-    alignItems: 'center',
-    marginTop: moderateScale(20),
+    color: '#fff',
+    fontSize: moderateScale(18),
   },
 });

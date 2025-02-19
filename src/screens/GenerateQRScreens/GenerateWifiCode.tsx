@@ -6,18 +6,17 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  PermissionsAndroid,
   ScrollView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import QRCode from 'react-native-qrcode-svg';
-import RNFS from 'react-native-fs';
 import {Picker} from '@react-native-picker/picker';
 import Header from '../../components/commonComponents/Header';
 import {moderateScale} from '../../utils/dimensions';
 import {colors} from '../../utils/LightTheme';
 import Animated, {FadeIn, FadeOut, BounceIn} from 'react-native-reanimated';
 import {contents} from '../../context';
+import ShareDownloadComponent from '../../components/generateQRCodesComponent/ShareDownloadComponent';
 
 const GenerateWifiCode: React.FC = () => {
   const navigation = useNavigation();
@@ -28,6 +27,7 @@ const GenerateWifiCode: React.FC = () => {
   >('WPA');
   const [isActive, setIsActive] = useState(false);
   const [error, setError] = useState('');
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null); // ✅ FIXED ERROR
   const qrRef = useRef<QRCode | null>(null);
 
   const generateQRCode = () => {
@@ -37,6 +37,10 @@ const GenerateWifiCode: React.FC = () => {
     }
     setError('');
     setIsActive(true);
+
+    // Generate QR Code URL
+    const qrCodeValue = `WIFI:T:${encryptionType};S:${ssid};P:${password};;`;
+    setDownloadUrl(qrCodeValue); // ✅ FIXED ERROR
   };
 
   const clearInput = () => {
@@ -45,25 +49,7 @@ const GenerateWifiCode: React.FC = () => {
     setEncryptionType('WPA');
     setIsActive(false);
     setError('');
-  };
-
-  const getWiFiQRValue = () =>
-    `WIFI:T:${encryptionType};S:${ssid};P:${password};;`;
-
-  const downloadQRCode = async () => {
-    if (qrRef.current) {
-      try {
-        qrRef.current.toDataURL((qrDataUrl: string) => {
-          const path = `${RNFS.DownloadDirectoryPath}/wifi-qr-code.png`;
-          const base64Data = qrDataUrl.split(',')[1];
-          RNFS.writeFile(path, base64Data, 'base64')
-            .then(() => Alert.alert(contents('QRsavedDownloads')))
-            .catch(error => Alert.alert(contents('FailedsaveCode')));
-        });
-      } catch (error) {
-        Alert.alert(contents('FailedQRCode'));
-      }
-    }
+    setDownloadUrl(null); // ✅ FIXED ERROR
   };
 
   return (
@@ -112,28 +98,13 @@ const GenerateWifiCode: React.FC = () => {
             </TouchableOpacity>
           </Animated.View>
 
-          {isActive && (
-            <Animated.View
-              entering={FadeIn.duration(800)}
-              exiting={FadeOut.duration(500)}
-              style={styles.qrCode}>
-              <QRCode ref={qrRef} value={getWiFiQRValue()} size={200} />
-            </Animated.View>
-          )}
-
-          <TouchableOpacity style={styles.clearButton} onPress={clearInput}>
-            <Text style={styles.clearButtonText}>{contents('Clear')}</Text>
-          </TouchableOpacity>
-
-          {isActive && (
-            <TouchableOpacity
-              style={styles.downloadButton}
-              onPress={downloadQRCode}>
-              <Text style={styles.downloadButtonText}>
-                {contents('DownloadQRCode')}
-              </Text>
-            </TouchableOpacity>
-          )}
+          {isActive &&
+            downloadUrl && ( // ✅ FIXED ERROR
+              <ShareDownloadComponent
+                downloadUrl={downloadUrl}
+                isActive={true}
+              />
+            )}
         </View>
       </ScrollView>
     </View>
@@ -165,7 +136,7 @@ const styles = StyleSheet.create({
     marginBottom: moderateScale(15),
   },
   button: {
-    backgroundColor: '#3498DB',
+    backgroundColor: colors.highlightSelected,
     padding: moderateScale(15),
     borderRadius: moderateScale(5),
     alignItems: 'center',
@@ -177,27 +148,5 @@ const styles = StyleSheet.create({
   qrCode: {
     marginTop: moderateScale(20),
     alignItems: 'center',
-  },
-  clearButton: {
-    backgroundColor: '#e74c3c',
-    padding: moderateScale(10),
-    borderRadius: moderateScale(5),
-    marginTop: moderateScale(20),
-    alignItems: 'center',
-  },
-  clearButtonText: {
-    color: '#fff',
-    fontSize: moderateScale(18),
-  },
-  downloadButton: {
-    backgroundColor: '#2ecc71',
-    padding: moderateScale(10),
-    borderRadius: moderateScale(5),
-    marginTop: moderateScale(20),
-    alignItems: 'center',
-  },
-  downloadButtonText: {
-    color: '#fff',
-    fontSize: moderateScale(18),
   },
 });

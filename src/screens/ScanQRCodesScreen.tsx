@@ -9,7 +9,7 @@ import Header from '../components/commonComponents/Header';
 const ScanQRCodesScreen = () => {
   const navigation = useNavigation();
   const cameraRef = useRef(null);
-  const [flashMode, setFlashMode] = useState('auto');
+  const [flashMode, setFlashMode] = useState('off');
   const [scannedData, setScannedData] = useState(null);
   const [showCamera, setShowCamera] = useState(true);
 
@@ -30,22 +30,12 @@ const ScanQRCodesScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Header
-        title="Scan Bar Code"
-        onBackPress={() => navigation.goBack()}
-        onBackLongPress={() =>
-          Alert.alert('Long Press', 'You held the back button!')
-        }
-        rightComponent={
-          !showCamera ? (
-            <TouchableOpacity
-              onPress={handleBarcodeScan}
-              style={styles.iconButton}>
-              <AntDesign name="barcode" size={30} color="black" />
-            </TouchableOpacity>
-          ) : null
-        }
-      />
+      {/* Properly Positioned Header */}
+      <View style={styles.headerContainer}>
+        <Header title="Scan QR Code" onBackPress={() => navigation.goBack()} />
+      </View>
+
+      {/* Camera or QR Code Result */}
       {showCamera ? (
         <View style={styles.cameraContainer}>
           <Camera
@@ -56,7 +46,7 @@ const ScanQRCodesScreen = () => {
             onReadCode={handleBarcodeScan}
             showFrame={true}
             laserColor="red"
-            frameColor="white"
+            frameColor="green"
             style={styles.camera}
           />
           <TouchableOpacity style={styles.flashButton} onPress={toggleFlash}>
@@ -85,23 +75,18 @@ export default ScanQRCodesScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#fff',
-    padding: 20,
   },
-  header: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#333',
+  headerContainer: {
+    width: '100%',
+    paddingHorizontal: 15,
+    paddingTop: 10,
   },
   cameraContainer: {
-    position: 'relative',
+    flex: 1,
     width: '100%',
-    height: '70%',
-    borderRadius: 10,
-    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   camera: {
     width: '100%',
@@ -116,9 +101,9 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   resultContainer: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 30,
   },
   barcodeText: {
     fontSize: 18,

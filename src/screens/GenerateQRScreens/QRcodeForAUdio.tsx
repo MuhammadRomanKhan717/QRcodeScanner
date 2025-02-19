@@ -4,20 +4,19 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  StyleSheet,
   Alert,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
-import {useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import DocumentPicker from 'react-native-document-picker';
-import QRCode from 'react-native-qrcode-svg';
-import ViewShot from 'react-native-view-shot';
-import Share from 'react-native-share';
 import axios from 'axios';
-import {moderateScale, scaleHeight} from '../../utils/dimensions';
-import {colors} from '../../utils/LightTheme';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Header from '../../components/commonComponents/Header';
-import {useNavigation} from '@react-navigation/native';
+import {moderateScale} from '../../utils/dimensions';
+import {colors} from '../../utils/LightTheme';
+import Animated, {FadeIn, FadeOut, BounceIn} from 'react-native-reanimated';
 import {contents} from '../../context';
 import ShareDownloadComponent from '../../components/generateQRCodesComponent/ShareDownloadComponent';
 
@@ -25,25 +24,26 @@ const QRCodeForAudio = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const mode = route?.params?.mode;
+
   const [fileUri, setFileUri] = useState<string | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [qrName, setQrName] = useState('');
-  const viewShotRef = useRef(null);
+  const [error, setError] = useState('');
 
   const pickFile = async () => {
     try {
       const res = await DocumentPicker.pickSingle({
-        type: [DocumentPicker.types.allFiles],
+        type: [DocumentPicker.types.audio, DocumentPicker.types.pdf],
       });
-      console.log(contents('FileSelected'), res);
       setFileUri(res.uri);
+      setError('');
       uploadFileToGoFile(res);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         Alert.alert(contents('Cancelled'), contents('FileSelectionCancelled'));
       } else {
-        Alert.alert(contents('Error'), contents('FilePickError'));
+        setError(contents('FilePickError'));
         console.error(err);
       }
     }
@@ -66,38 +66,16 @@ const QRCodeForAudio = () => {
       );
 
       if (response.data.status === 'ok') {
-        const fileUrl = response.data.data.downloadPage;
-        console.log(contents('UploadSuccess'), fileUrl);
-        setDownloadUrl(fileUrl);
+        setDownloadUrl(response.data.data.downloadPage);
+        setError('');
       } else {
         throw new Error(contents('UploadFailed'));
       }
     } catch (error) {
-      Alert.alert(contents('Error'), contents('UploadError'));
+      setError(contents('UploadError'));
       console.error(error);
     }
     setUploading(false);
-  };
-
-  const shareQRCode = async () => {
-    if (!downloadUrl) {
-      Alert.alert(contents('Error'), contents('UploadFirstError'));
-      return;
-    }
-
-    try {
-      const uri = await viewShotRef.current.capture();
-      if (!uri) return;
-
-      const options = {
-        title: contents('ShareQRCodeTitle'),
-        url: `file://${uri}`,
-        type: 'image/png',
-      };
-      await Share.open(options);
-    } catch (error) {
-      console.error(contents('ShareError'), error);
-    }
   };
 
   return (
@@ -109,92 +87,84 @@ const QRCodeForAudio = () => {
             : contents('GenerateQRcodeforPPTX')
         }
         onBackPress={() => navigation.goBack()}
-        onBackLongPress={() => Alert.alert(contents('LongPressbutton'))}
-        rightComponent={null}
-      />
-      <Text style={styles.heading}>
-        {mode === 'Audio'
-          ? contents('AudioQRCodeGenerator')
-          : contents('PPTXQRCodeGenerator')}
-      </Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder={contents('NameYourQR')}
-        value={qrName}
-        onChangeText={setQrName}
       />
 
-      <TouchableOpacity style={styles.uploadButton} onPress={pickFile}>
-        <Icon name="upload" size={20} color={colors.primary} />
-        <Text style={styles.uploadButtonText}>{contents('UploadFile')}</Text>
-      </TouchableOpacity>
+      <ScrollView contentContainerStyle={styles.wrapper}>
+        <Animated.Text entering={FadeIn.duration(500)} style={styles.title}>
+          {mode === 'Audio'
+            ? contents('AudioQRCodeGenerator')
+            : contents('PPTXQRCodeGenerator')}
+        </Animated.Text>
 
-      {uploading && <ActivityIndicator size="large" color={colors.primary} />}
-      {downloadUrl && <ShareDownloadComponent downloadUrl={downloadUrl} />}
+        <TextInput
+          style={styles.input}
+          placeholder={contents('NameYourQR')}
+          value={qrName}
+          onChangeText={setQrName}
+        />
+
+        <TouchableOpacity style={styles.uploadButton} onPress={pickFile}>
+          <Icon name="upload" size={20} color={colors.white} />
+          <Text style={styles.uploadButtonText}>{contents('UploadFile')}</Text>
+        </TouchableOpacity>
+
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+        {uploading && <ActivityIndicator size="large" color={colors.primary} />}
+
+        {downloadUrl && (
+          <Animated.View entering={BounceIn.duration(700)}>
+            <ShareDownloadComponent downloadUrl={downloadUrl} isActive={true} />
+          </Animated.View>
+        )}
+      </ScrollView>
     </View>
   );
 };
 
 export default QRCodeForAudio;
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: colors.white,
-    padding: moderateScale(20),
   },
-  heading: {
-    fontSize: moderateScale(20),
-    fontWeight: 'bold',
-    color: colors.blackText,
-    marginBottom: moderateScale(20),
+  wrapper: {
+    padding: moderateScale(20),
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: moderateScale(21),
+    fontWeight: '500',
+    textAlign: 'center',
+    marginBottom: moderateScale(10),
   },
   input: {
     width: '100%',
-    height: scaleHeight(50),
-    backgroundColor: colors.white,
-    borderRadius: moderateScale(10),
-    paddingHorizontal: moderateScale(15),
+    fontSize: moderateScale(18),
+    padding: moderateScale(10),
+    borderWidth: 1,
+    borderColor: colors.grey800,
+    borderRadius: moderateScale(5),
     marginBottom: moderateScale(15),
-    elevation: 4,
   },
   uploadButton: {
+    flexDirection: 'row',
     backgroundColor: colors.highlightSelected,
-    paddingVertical: moderateScale(5),
-    borderRadius: moderateScale(10),
-    width: '100%',
+    padding: moderateScale(12),
+    borderRadius: moderateScale(5),
     alignItems: 'center',
-    elevation: 6,
+    justifyContent: 'center',
+    width: '100%',
   },
   uploadButtonText: {
-    color: colors.whiteText,
+    color: colors.white,
     fontSize: moderateScale(16),
-    fontWeight: 'bold',
+    marginLeft: moderateScale(5),
   },
-  qrContainer: {
-    marginTop: moderateScale(15),
-    alignItems: 'center',
-  },
-  qrText: {
-    marginTop: moderateScale(10),
+  errorText: {
+    color: 'red',
     fontSize: moderateScale(14),
-    color: colors.grey800,
+    marginTop: moderateScale(5),
   },
-  button: {
-    backgroundColor: colors.highlightSelected,
-    paddingVertical: moderateScale(15),
-    borderRadius: moderateScale(10),
-    width: moderateScale(320),
-    alignItems: 'center',
-    elevation: 6,
-    marginTop: moderateScale(15),
-  },
-  buttonText: {
-    color: colors.whiteText,
-    fontSize: moderateScale(16),
-    fontWeight: 'bold',
-  },
-};
+});
