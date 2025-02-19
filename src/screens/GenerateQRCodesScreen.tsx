@@ -13,7 +13,7 @@ import Animated, {
   FadeIn,
 } from 'react-native-reanimated';
 import {moderateScale, scaleHeight, scaleWidth} from '../utils/dimensions';
-import {contents} from '../context';
+import {contents, useLanguage} from '../context';
 import Header from '../components/commonComponents/Header';
 import {colors} from '../utils/LightTheme';
 

@@ -22,6 +22,7 @@ import {colors} from '../utils/LightTheme';
 // Navigation type definition
 type RootStackParamList = {
   BarcodeScreen: undefined;
+  MakePDFfileScreen: undefined;
 };
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -33,7 +34,12 @@ const barcodeData = [
     icon: 'barcode',
     screen: 'GenerateBarCodeForEmail',
   },
-  {id: '2', name: 'Inventory Code', icon: 'barcode', screen: 'BarcodeScreen'},
+  {
+    id: '2',
+    name: 'Inventory Code',
+    icon: 'barcode',
+    screen: 'MakePDFfileScreen',
+  },
   {id: '3', name: 'Shipping Label', icon: 'barcode', screen: 'BarcodeScreen'},
 ];
 
