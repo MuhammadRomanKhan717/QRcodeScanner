@@ -146,5 +146,22 @@
     "TermsAndConditions": "Sharuɗɗa da yanayi",
     "AboutUs": "Game da Mu",
     "PrivacyPolicy": "Manufar Sirri",
-    "GenerateBarcodes": "Duk nau'ikan lambobin bar"
+    "GenerateBarcodes": "Duk nau'ikan lambobin bar",
+    "custom": "Kayan",
+  "Location": "Wuri",
+  "URLLocation": "URL Wuri",
+  "AddLocation": "Ƙara Wuri",
+  "Scans": "Sakamakon",
+  "NumberOfScans": "Yawan Sakamako",
+  "AddScan": "Ƙara Sakamako",
+  "Time": "Lokaci",
+  "Timezone": "Zaman lokaci",
+  "TimeStart": "Lokaci fara",
+  "TimeEnd": "Lokaci ƙare",
+  "URLTime": "URL Lokaci",
+  "Language": "Harshe",
+  "AddLanguage": "Ƙara Harshe",
+  "AddTime": "Ƙara Lokaci",
+  "URLforScan": "URL don Skan",
+  "URLLanguage": "URL Harshe"
 }

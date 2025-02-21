@@ -144,6 +144,23 @@
     "TermsAndConditions": "नियम और शर्तें",
     "AboutUs": "हमारे बारे में",
     "PrivacyPolicy": "गोपनीयता नीति",
-    "GenerateBarcodes": "सभी प्रकार के बारकोड"
+    "GenerateBarcodes": "सभी प्रकार के बारकोड",
+    "custom": "कस्टम",
+    "Location": "स्थान",
+    "URLLocation": "URL स्थान",
+    "AddLocation": "स्थान जोड़ें",
+    "Scans": "स्कैन",
+    "NumberOfScans": "स्कैन की संख्या",
+    "AddScan": "स्कैन जोड़ें",
+    "Time": "समय",
+    "Timezone": "समय क्षेत्र",
+    "TimeStart": "समय प्रारंभ",
+    "TimeEnd": "समय समाप्ति",
+    "URLTime": "URL समय",
+    "Language": "भाषा",
+    "AddLanguage": "भाषा जोड़ें",
+    "AddTime": "समय जोड़ें",
+    "URLforScan": "स्कैन के लिए URL",
+    "URLLanguage": "URL भाषा"
 }
 

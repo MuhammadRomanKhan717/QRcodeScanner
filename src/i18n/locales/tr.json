@@ -144,7 +144,24 @@
     "TermsAndConditions": "Şartlar ve Koşullar",
     "AboutUs": "Hakkımızda",
     "PrivacyPolicy": "Gizlilik Politikası",
-    "GenerateBarcodes": "Tüm Barkod Türleri"
+    "GenerateBarcodes": "Tüm Barkod Türleri",
+    "custom": "Özel",
+  "Location": "Konum",
+  "URLLocation": "URL Konumu",
+  "AddLocation": "Konum Ekle",
+  "Scans": "Tarama",
+  "NumberOfScans": "Tarama Sayısı",
+  "AddScan": "Tarama Ekle",
+  "Time": "Zaman",
+  "Timezone": "Zaman Dilimi",
+  "TimeStart": "Başlangıç Zamanı",
+  "TimeEnd": "Bitiş Zamanı",
+  "URLTime": "URL Zamanı",
+  "Language": "Dil",
+  "AddLanguage": "Dil Ekle",
+  "AddTime": "Zaman Ekle",
+  "URLforScan": "Tarama için URL",
+  "URLLanguage": "URL Dili"
 }
 
 

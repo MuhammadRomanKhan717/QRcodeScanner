@@ -145,7 +145,24 @@
     "TermsAndConditions": "Syarat & Ketentuan",
     "AboutUs": "Tentang Kami",
     "PrivacyPolicy": "Kebijakan Privasi",
-    "GenerateBarcodes": "Semua Jenis Kode Batang"
+    "GenerateBarcodes": "Semua Jenis Kode Batang",
+    "custom": "Kustom",
+  "Location": "Lokasi",
+  "URLLocation": "Lokasi URL",
+  "AddLocation": "Tambah Lokasi",
+  "Scans": "Pemindaian",
+  "NumberOfScans": "Jumlah Pemindaian",
+  "AddScan": "Tambah Pemindaian",
+  "Time": "Waktu",
+  "Timezone": "Zona Waktu",
+  "TimeStart": "Waktu Mulai",
+  "TimeEnd": "Waktu Selesai",
+  "URLTime": "URL Waktu",
+  "Language": "Bahasa",
+  "AddLanguage": "Tambah Bahasa",
+  "AddTime": "Tambah Waktu",
+  "URLforScan": "URL untuk Pindai",
+  "URLLanguage": "Bahasa URL"
 }
 
 

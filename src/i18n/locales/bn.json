@@ -138,7 +138,27 @@
     "SMSQRCodeGenerator": "এসএমএস কিউআর কোড জেনারেটর",
     "EnterPhoneNumber": "ফোন নম্বর প্রবেশ করুন",
     "EnterWhatsAppMessage": "হোয়াটসঅ্যাপ বার্তা প্রবেশ করুন (ঐচ্ছিক)",
-    "EnterSMSMessage": "এসএমএস বার্তা প্রবেশ করুন"
+    "EnterSMSMessage": "এসএমএস বার্তা প্রবেশ করুন",
+
+        "custom": "কাস্টম",
+        "Location": "অবস্থান",
+        "URLLocation": "URL অবস্থান",
+        "AddLocation": "অবস্থান যোগ করুন",
+        "Scans": "স্ক্যান",
+        "NumberOfScans": "স্ক্যানের সংখ্যা",
+        "AddScan": "স্ক্যান যোগ করুন",
+        "Time": "সময়",
+        "Timezone": "টাইমজোন",
+        "TimeStart": "সময় শুরু",
+        "TimeEnd": "সময় শেষ",
+        "URLTime": "URL সময়",
+        "Language": "ভাষা",
+        "AddLanguage": "ভাষা যোগ করুন",
+        "AddTime": "সময় যোগ করুন",
+        "URLforScan": "স্ক্যানের জন্য URL",
+        "URLLanguage": "URL ভাষা"
+  
+      
 }
 
 

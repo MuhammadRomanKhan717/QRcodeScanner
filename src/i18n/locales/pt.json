@@ -144,7 +144,24 @@
     "TermsAndConditions": "Termos e Condições",
     "AboutUs": "Sobre nós",
     "PrivacyPolicy": "Política de Privacidade",
-    "GenerateBarcodes": "Todos os tipos de códigos de barras"
+    "GenerateBarcodes": "Todos os tipos de códigos de barras",
+    "custom": "Personalizado",
+  "Location": "Localização",
+  "URLLocation": "Localização URL",
+  "AddLocation": "Adicionar Localização",
+  "Scans": "Escaneamentos",
+  "NumberOfScans": "Número de Escaneamentos",
+  "AddScan": "Adicionar Escaneamento",
+  "Time": "Tempo",
+  "Timezone": "Fuso Horário",
+  "TimeStart": "Hora de Início",
+  "TimeEnd": "Hora de Término",
+  "URLTime": "Hora URL",
+  "Language": "Idioma",
+  "AddLanguage": "Adicionar Idioma",
+  "AddTime": "Adicionar Tempo",
+  "URLforScan": "URL para Escanear",
+  "URLLanguage": "Idioma URL"
 }
 
 

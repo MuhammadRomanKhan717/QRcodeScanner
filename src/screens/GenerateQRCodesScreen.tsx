@@ -88,9 +88,9 @@ const data: QRCodeItem[] = [
   {
     id: '29',
     name: contents('custom'),
-    icon: 'microsoft-excel',
+    icon: 'qr-code',
     screen: 'GenerateCustomQRCode',
-    mode: 'excel',
+    mode: 'custom',
   },
   {
     id: '27',
@@ -273,6 +273,7 @@ const getIconComponent = (iconName: string) => {
     'card-account-details-outline',
     'microsoft-excel',
     'email',
+    'qr-code',
   ];
   if (iconName === 'paypal') {
     return <FontAwesome name="paypal" size={24} color="#4CAF50" />;
@@ -282,6 +283,9 @@ const getIconComponent = (iconName: string) => {
     return <Octicons name="video" size={24} color="#4CAF50" />;
   } else if (iconName === 'tiktok') {
     return <MaterialIcons name="tiktok" size={24} color="#4CAF50" />;
+  } else if (iconName === 'qr-code') {
+    // Handle 'qr-code' for custom
+    return <Icon name="qrcode" size={24} color="#4CAF50" />;
   } else if (fontistoIcons.includes(iconName)) {
     return <Fontisto name={iconName} size={24} color="#4CAF50" />;
   } else if (materialIcons.includes(iconName)) {

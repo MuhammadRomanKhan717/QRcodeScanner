@@ -133,7 +133,24 @@
     "ChangeLanguage": "更改语言",
     "TermsAndConditions": "条款和条件",
     "AboutUs": "关于我们",
-    "PrivacyPolicy": "隐私政策"
+    "PrivacyPolicy": "隐私政策",
+    "custom": "自定义",
+    "Location": "位置",
+    "URLLocation": "URL 位置",
+    "AddLocation": "添加位置",
+    "Scans": "扫描",
+    "NumberOfScans": "扫描次数",
+    "AddScan": "添加扫描",
+    "Time": "时间",
+    "Timezone": "时区",
+    "TimeStart": "开始时间",
+    "TimeEnd": "结束时间",
+    "URLTime": "URL 时间",
+    "Language": "语言",
+    "AddLanguage": "添加语言",
+    "AddTime": "添加时间",
+    "URLforScan": "扫描的URL",
+    "URLLanguage": "URL 语言"
 }
 
 

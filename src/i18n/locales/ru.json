@@ -144,7 +144,24 @@
     "TermsAndConditions": "Условия и положения",
     "AboutUs": "О нас",
     "PrivacyPolicy": "Политика конфиденциальности",
-    "GenerateBarcodes": "Все виды штрих-кодов"
+    "GenerateBarcodes": "Все виды штрих-кодов",
+    "custom": "Пользовательский",
+  "Location": "Местоположение",
+  "URLLocation": "URL местоположение",
+  "AddLocation": "Добавить местоположение",
+  "Scans": "Сканирования",
+  "NumberOfScans": "Количество сканирований",
+  "AddScan": "Добавить сканирование",
+  "Time": "Время",
+  "Timezone": "Часовой пояс",
+  "TimeStart": "Время начала",
+  "TimeEnd": "Время окончания",
+  "URLTime": "URL время",
+  "Language": "Язык",
+  "AddLanguage": "Добавить язык",
+  "AddTime": "Добавить время",
+  "URLforScan": "URL для сканирования",
+  "URLLanguage": "Язык URL"
 }
 
 

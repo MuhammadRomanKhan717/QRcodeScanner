@@ -144,7 +144,24 @@
     "TermsAndConditions": "이용 약관",
     "AboutUs": "회사 소개",
     "PrivacyPolicy": "개인정보 보호정책",
-    "GenerateBarcodes": "모든 종류의 바코드"
+    "GenerateBarcodes": "모든 종류의 바코드",
+    "custom": "사용자 정의",
+  "Location": "위치",
+  "URLLocation": "URL 위치",
+  "AddLocation": "위치 추가",
+  "Scans": "스캔",
+  "NumberOfScans": "스캔 횟수",
+  "AddScan": "스캔 추가",
+  "Time": "시간",
+  "Timezone": "시간대",
+  "TimeStart": "시작 시간",
+  "TimeEnd": "종료 시간",
+  "URLTime": "URL 시간",
+  "Language": "언어",
+  "AddLanguage": "언어 추가",
+  "AddTime": "시간 추가",
+  "URLforScan": "스캔용 URL",
+  "URLLanguage": "URL 언어"
 }
 
 

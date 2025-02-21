@@ -129,7 +129,24 @@
     "TermsAndConditions": "الشروط والأحكام",
     "AboutUs": "معلومات عنا",
     "PrivacyPolicy": "سياسة الخصوصية",
-    "GenerateBarcodes": "جميع أنواع رموز الباركود"
+    "GenerateBarcodes": "جميع أنواع رموز الباركود",
+    "custom": "مخصص",
+    "Location": "الموقع",
+    "URLLocation": "موقع URL",
+    "AddLocation": "إضافة موقع",
+    "Scans": "عمليات المسح",
+    "NumberOfScans": "عدد المسح",
+    "AddScan": "إضافة مسح",
+    "Time": "الوقت",
+    "Timezone": "المنطقة الزمنية",
+    "TimeStart": "وقت البدء",
+    "TimeEnd": "وقت الانتهاء",
+    "URLTime": "وقت URL",
+    "Language": "اللغة",
+    "AddLanguage": "إضافة لغة",
+    "AddTime": "إضافة وقت",
+    "URLforScan": "URL للماسح",
+    "URLLanguage": "لغة URL"
 }
 
 

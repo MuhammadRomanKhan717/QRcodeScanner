@@ -127,7 +127,27 @@
   "ChangeLanguage": "زبان تبدیل کریں",
   "TermsAndConditions": "شرائط و ضوابط",
   "AboutUs": "ہمارے بارے میں",
-  "PrivacyPolicy": "رازداری کی پالیسی"
+  "PrivacyPolicy": "رازداری کی پالیسی",
+
+    "custom": "حسب ضرورت",
+    "Location": "مقام",
+    "URLLocation": "URL مقام",
+    "AddLocation": "مقام شامل کریں",
+    "Scans": "سکین",
+    "NumberOfScans": "سکین کی تعداد",
+    "AddScan": "سکین شامل کریں",
+    "Time": "وقت",
+    "Timezone": "ٹائم زون",
+    "TimeStart": "وقت کا آغاز",
+    "TimeEnd": "وقت کا اختتام",
+    "URLTime": "URL وقت",
+    "Language": "زبان",
+    "AddLanguage": "زبان شامل کریں",
+    "AddTime": "وقت شامل کریں",
+  "URLforScan": "اسکین کے لیے URL",
+  "URLLanguage": "URL زبان"
+
+  
 }
 
 

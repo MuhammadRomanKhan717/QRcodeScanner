@@ -20,14 +20,16 @@ import {moderateScale, scaleWidth} from '../../utils/dimensions';
 import {colors} from '../../utils/LightTheme';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Animated, {FadeIn, BounceIn} from 'react-native-reanimated';
-import {contents} from '../../context';
+import {contents, useLanguage} from '../../context';
 import Header from '../../components/commonComponents/Header';
 
 const QRcodeForSocialMedia = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const {mode} = route.params || {mode: 'Facebook'};
-
+  const {language} = useLanguage();
+  console.log('language///', language);
+  const isRTL = language === 'ar';
   const [link, setLink] = useState('');
   const [name, setName] = useState('');
   const [qrGenerated, setQrGenerated] = useState(false);
@@ -112,7 +114,7 @@ const QRcodeForSocialMedia = () => {
 
       <ScrollView contentContainerStyle={styles.wrapper}>
         <Animated.Text entering={FadeIn.duration(500)} style={styles.title}>
-          {contents('EnterDetailsToGenerateQR')}
+          {contents('QRCodeGenerator')}
         </Animated.Text>
 
         {/* Social Media Link Input */}
@@ -195,6 +197,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
     marginBottom: moderateScale(10),
+    // justifyContent: isRTL ? 'flex-start' : 'flex-end',
   },
   inputContainer: {
     flexDirection: 'row',

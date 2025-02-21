@@ -11,9 +11,14 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'; // Use react-native-vector-icons
 import QRCode from 'react-native-qrcode-svg'; // QR code generation
 import Share from 'react-native-share'; // Sharing functionality
-import ShareDownloadComponent from '../../components/generateQRCodesComponent/ShareDownloadComponent';
+import {contents} from '../../context';
+import {moderateScale} from '../../utils/dimensions';
+import {colors} from '../../utils/LightTheme';
+// Import the context
 
 const GenerateCustomQRCode = () => {
+  //   const {contents, setLanguage} = useLocalization(); // Use contents from context
+
   const [selectedTab, setSelectedTab] = useState<
     'location' | 'scans' | 'time' | 'language'
   >('location');
@@ -118,12 +123,12 @@ const GenerateCustomQRCode = () => {
   // Share QR Code
   const shareQRCode = async () => {
     if (!qrCodeValue) {
-      Alert.alert('Error', 'Please generate the QR code first!');
+      Alert.alert(contents('Error'), contents('GenerateQRCodeFirst'));
       return;
     }
     try {
       const options = {
-        title: 'Share QR Code',
+        title: contents('ShareQRCodeTitle'),
         url: `data:image/png;base64,${qrCodeValue}`,
         type: 'image/png',
       };
@@ -138,12 +143,12 @@ const GenerateCustomQRCode = () => {
       case 'location':
         return (
           <View>
-            <Text style={styles.sectionHeading}>Location</Text>
+            <Text style={styles.sectionHeading}>{contents('Location')}</Text>
             {locations.map((location, index) => (
               <View key={index} style={styles.fieldContainer}>
                 <TextInput
                   style={styles.input}
-                  placeholder="Country"
+                  placeholder={contents('Country')}
                   value={location.country}
                   onChangeText={text =>
                     handleFieldChange(index, 'country', text, 'location')
@@ -151,7 +156,7 @@ const GenerateCustomQRCode = () => {
                 />
                 <TextInput
                   style={styles.input}
-                  placeholder="URL Location"
+                  placeholder={contents('URLLocation')}
                   value={location.url}
                   onChangeText={text =>
                     handleFieldChange(index, 'url', text, 'location')
@@ -163,19 +168,19 @@ const GenerateCustomQRCode = () => {
               style={styles.addButton}
               onPress={addLocationField}>
               <MaterialIcons name="add" size={24} color="#fff" />
-              <Text style={styles.addText}>Add Location</Text>
+              <Text style={styles.addText}>{contents('AddLocation')}</Text>
             </TouchableOpacity>
           </View>
         );
       case 'scans':
         return (
           <View>
-            <Text style={styles.sectionHeading}>Scans</Text>
+            <Text style={styles.sectionHeading}>{contents('Scans')}</Text>
             {scans.map((scan, index) => (
               <View key={index} style={styles.fieldContainer}>
                 <TextInput
                   style={styles.input}
-                  placeholder="Number of scans"
+                  placeholder={contents('NumberOfScans')}
                   value={String(scan.numScans)}
                   onChangeText={text =>
                     handleFieldChange(index, 'numScans', text, 'scan')
@@ -184,7 +189,7 @@ const GenerateCustomQRCode = () => {
                 />
                 <TextInput
                   style={styles.input}
-                  placeholder="URL for scan"
+                  placeholder={contents('URLforScan')}
                   value={scan.url}
                   onChangeText={text =>
                     handleFieldChange(index, 'url', text, 'scan')
@@ -194,19 +199,19 @@ const GenerateCustomQRCode = () => {
             ))}
             <TouchableOpacity style={styles.addButton} onPress={addScanField}>
               <MaterialIcons name="add" size={24} color="#fff" />
-              <Text style={styles.addText}>Add Scan</Text>
+              <Text style={styles.addText}>{contents('AddScan')}</Text>
             </TouchableOpacity>
           </View>
         );
       case 'time':
         return (
           <View>
-            <Text style={styles.sectionHeading}>Time</Text>
+            <Text style={styles.sectionHeading}>{contents('Time')}</Text>
             {times.map((time, index) => (
               <View key={index} style={styles.fieldContainer}>
                 <TextInput
                   style={styles.input}
-                  placeholder="Timezone"
+                  placeholder={contents('Timezone')}
                   value={time.timezone}
                   onChangeText={text =>
                     handleFieldChange(index, 'timezone', text, 'time')
@@ -214,7 +219,7 @@ const GenerateCustomQRCode = () => {
                 />
                 <TextInput
                   style={styles.input}
-                  placeholder="Time Start"
+                  placeholder={contents('TimeStart')}
                   value={time.timeStart}
                   onChangeText={text =>
                     handleFieldChange(index, 'timeStart', text, 'time')
@@ -222,7 +227,7 @@ const GenerateCustomQRCode = () => {
                 />
                 <TextInput
                   style={styles.input}
-                  placeholder="Time End"
+                  placeholder={contents('TimeEnd')}
                   value={time.timeEnd}
                   onChangeText={text =>
                     handleFieldChange(index, 'timeEnd', text, 'time')
@@ -230,7 +235,7 @@ const GenerateCustomQRCode = () => {
                 />
                 <TextInput
                   style={styles.input}
-                  placeholder="URL Time"
+                  placeholder={contents('URLTime')}
                   value={time.url}
                   onChangeText={text =>
                     handleFieldChange(index, 'url', text, 'time')
@@ -240,19 +245,19 @@ const GenerateCustomQRCode = () => {
             ))}
             <TouchableOpacity style={styles.addButton} onPress={addTimeField}>
               <MaterialIcons name="add" size={24} color="#fff" />
-              <Text style={styles.addText}>Add Time</Text>
+              <Text style={styles.addText}>{contents('AddTime')}</Text>
             </TouchableOpacity>
           </View>
         );
       case 'language':
         return (
           <View>
-            <Text style={styles.sectionHeading}>Language</Text>
+            <Text style={styles.sectionHeading}>{contents('Language')}</Text>
             {languages.map((language, index) => (
               <View key={index} style={styles.fieldContainer}>
                 <TextInput
                   style={styles.input}
-                  placeholder="Language"
+                  placeholder={contents('Language')}
                   value={language.language}
                   onChangeText={text =>
                     handleFieldChange(index, 'language', text, 'language')
@@ -260,7 +265,7 @@ const GenerateCustomQRCode = () => {
                 />
                 <TextInput
                   style={styles.input}
-                  placeholder="URL Language"
+                  placeholder={contents('URLLanguage')}
                   value={language.url}
                   onChangeText={text =>
                     handleFieldChange(index, 'url', text, 'language')
@@ -272,7 +277,7 @@ const GenerateCustomQRCode = () => {
               style={styles.addButton}
               onPress={addLanguageField}>
               <MaterialIcons name="add" size={24} color="#fff" />
-              <Text style={styles.addText}>Add Language</Text>
+              <Text style={styles.addText}>{contents('AddLanguage')}</Text>
             </TouchableOpacity>
           </View>
         );
@@ -287,22 +292,22 @@ const GenerateCustomQRCode = () => {
         <TouchableOpacity
           onPress={() => setSelectedTab('location')}
           style={styles.tabButton}>
-          <Text style={styles.tabText}>Location</Text>
+          <Text style={styles.tabText}>{contents('Location')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setSelectedTab('scans')}
           style={styles.tabButton}>
-          <Text style={styles.tabText}>Scans</Text>
+          <Text style={styles.tabText}>{contents('Scans')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setSelectedTab('time')}
           style={styles.tabButton}>
-          <Text style={styles.tabText}>Time</Text>
+          <Text style={styles.tabText}>{contents('Time')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setSelectedTab('language')}
           style={styles.tabButton}>
-          <Text style={styles.tabText}>Language</Text>
+          <Text style={styles.tabText}>{contents('Language')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -311,11 +316,16 @@ const GenerateCustomQRCode = () => {
       </ScrollView>
 
       <TouchableOpacity style={styles.generateButton} onPress={generateQRCode}>
-        <Text style={styles.buttonText}>Generate QR Code</Text>
+        <Text style={styles.buttonText}>{contents('GenerateQRCode')}</Text>
       </TouchableOpacity>
 
       {qrCodeValue ? (
-        <ShareDownloadComponent downloadUrl={qrCodeValue} />
+        <View style={styles.qrCodeContainer}>
+          <QRCode value={qrCodeValue} size={200} />
+          <TouchableOpacity style={styles.shareButton} onPress={shareQRCode}>
+            <Text style={styles.buttonText}>{contents('ShareQRCode')}</Text>
+          </TouchableOpacity>
+        </View>
       ) : null}
     </View>
   );
@@ -324,81 +334,82 @@ const GenerateCustomQRCode = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
+    padding: moderateScale(20),
+    backgroundColor: colors.white,
   },
   sectionHeading: {
-    fontSize: 18,
+    fontSize: moderateScale(18),
     fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 10,
-    marginTop: 20,
+    color: colors.grey900,
+    marginBottom: moderateScale(10),
+    marginTop: moderateScale(20),
   },
   tabBar: {
     flexDirection: 'row',
-    marginBottom: 20,
+    marginBottom: moderateScale(20),
     borderBottomWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.grey100,
   },
   tabButton: {
+    backgroundColor: 'red',
     flex: 1,
-    padding: 10,
+    padding: moderateScale(5),
     alignItems: 'center',
   },
   tabText: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     fontWeight: 'bold',
-    color: '#4a4a4a',
+    color: colors.grey600,
   },
   fieldContainer: {
-    marginBottom: 20,
+    marginBottom: moderateScale(20),
   },
   input: {
-    height: 50,
+    height: moderateScale(50),
     borderWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    borderRadius: 8,
+    borderColor: colors.grey200,
+    marginBottom: moderateScale(10),
+    paddingHorizontal: moderateScale(10),
+    borderRadius: moderateScale(8),
   },
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
-    backgroundColor: '#007bff',
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 8,
+    marginTop: moderateScale(10),
+    backgroundColor: colors.highlightSelected,
+    paddingVertical: moderateScale(8),
+    paddingHorizontal: moderateScale(15),
+    borderRadius: moderateScale(8),
   },
   addText: {
-    color: '#fff',
-    marginLeft: 5,
+    color: colors.white,
+    marginLeft: moderateScale(5),
   },
   contentContainer: {
-    paddingBottom: 20,
+    paddingBottom: moderateScale(20),
   },
   generateButton: {
-    backgroundColor: '#28a745',
-    paddingVertical: 15,
-    borderRadius: 8,
+    backgroundColor: colors.success,
+    paddingVertical: moderateScale(15),
+    borderRadius: moderateScale(8),
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: moderateScale(20),
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: colors.white,
+    fontSize: moderateScale(16),
     fontWeight: 'bold',
   },
   qrCodeContainer: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: moderateScale(20),
   },
   shareButton: {
-    backgroundColor: '#007bff',
-    paddingVertical: 15,
-    borderRadius: 8,
+    backgroundColor: colors.highlightSelected,
+    paddingVertical: moderateScale(15),
+    borderRadius: moderateScale(8),
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: moderateScale(10),
   },
 });
 

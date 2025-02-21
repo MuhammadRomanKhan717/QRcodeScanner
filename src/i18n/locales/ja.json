@@ -144,7 +144,10 @@
     "TermsAndConditions": "利用規約",
     "AboutUs": "会社概要",
     "PrivacyPolicy": "プライバシーポリシー",
-    "GenerateBarcodes": "すべての種類のバーコード"
+    "GenerateBarcodes": "すべての種類のバーコード",
+    "AddTime": "時間を追加",
+    "URLforScan": "スキャン用URL",
+    "URLLanguage": "URL 言語"
 }
 
 
