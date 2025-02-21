@@ -2,7 +2,6 @@ import {moderateScale} from './dimensions';
 
 export const colors = {
   black: '#000000',
-  // grey800: '#272D31',
   grey800: '#170038',
   grey600: '#8B96A5',
   grey400: '#ACB6BF',
@@ -17,6 +16,7 @@ export const colors = {
   white: '#FFFFFF',
   highlight: '#E5F1FF',
   highlightSelected: '#0D6EFD',
+  tabSelected: '#0000FF',
   successLight: '#C3FFCB',
   success: '#00B517',
 

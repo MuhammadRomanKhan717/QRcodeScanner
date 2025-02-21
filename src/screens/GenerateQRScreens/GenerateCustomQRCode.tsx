@@ -12,13 +12,16 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'; // Use reac
 import QRCode from 'react-native-qrcode-svg'; // QR code generation
 import Share from 'react-native-share'; // Sharing functionality
 import {contents} from '../../context';
-import {moderateScale} from '../../utils/dimensions';
+import {useNavigation} from '@react-navigation/native';
+import {moderateScale, scaleWidth} from '../../utils/dimensions';
 import {colors} from '../../utils/LightTheme';
+import Header from '../../components/commonComponents/Header';
+import ShareDownloadComponent from '../../components/generateQRCodesComponent/ShareDownloadComponent';
 // Import the context
 
 const GenerateCustomQRCode = () => {
   //   const {contents, setLanguage} = useLocalization(); // Use contents from context
-
+  const navigation = useNavigation();
   const [selectedTab, setSelectedTab] = useState<
     'location' | 'scans' | 'time' | 'language'
   >('location');
@@ -98,8 +101,42 @@ const GenerateCustomQRCode = () => {
   };
 
   // Generate QR Code based on the active tab
+  // Generate QR Code based on the active tab with validation
   const generateQRCode = () => {
     let data = '';
+
+    // Validate fields before generating QR code
+    const isValid = () => {
+      switch (selectedTab) {
+        case 'location':
+          return locations.every(
+            location => location.country.trim() && location.url.trim(),
+          );
+        case 'scans':
+          return scans.every(scan => scan.numScans > 0 && scan.url.trim());
+        case 'time':
+          return times.every(
+            time =>
+              time.timezone.trim() &&
+              time.timeStart.trim() &&
+              time.timeEnd.trim() &&
+              time.url.trim(),
+          );
+        case 'language':
+          return languages.every(
+            language => language.language.trim() && language.url.trim(),
+          );
+        default:
+          return false;
+      }
+    };
+
+    if (!isValid()) {
+      Alert.alert(contents('Error'), contents('FillAllFields')); // Show alert if any field is empty
+      return;
+    }
+
+    // Convert data to JSON based on the selected tab
     switch (selectedTab) {
       case 'location':
         data = JSON.stringify(locations);
@@ -117,6 +154,7 @@ const GenerateCustomQRCode = () => {
         data = 'No data available';
         break;
     }
+
     setQrCodeValue(data); // Set QR code data
   };
 
@@ -288,25 +326,64 @@ const GenerateCustomQRCode = () => {
 
   return (
     <View style={styles.container}>
+      <Header
+        title={contents('customURL')}
+        onBackPress={() => navigation.goBack()}
+      />
       <View style={styles.tabBar}>
         <TouchableOpacity
+          activeOpacity={1}
           onPress={() => setSelectedTab('location')}
-          style={styles.tabButton}>
+          style={[
+            styles.tabButton,
+            {
+              backgroundColor:
+                selectedTab === 'location'
+                  ? colors.tabSelected
+                  : colors.grey600,
+            },
+          ]}>
           <Text style={styles.tabText}>{contents('Location')}</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
+          activeOpacity={1}
           onPress={() => setSelectedTab('scans')}
-          style={styles.tabButton}>
+          style={[
+            styles.tabButton,
+            {
+              backgroundColor:
+                selectedTab === 'scans' ? colors.tabSelected : colors.grey600,
+            },
+          ]}>
           <Text style={styles.tabText}>{contents('Scans')}</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
+          activeOpacity={1}
           onPress={() => setSelectedTab('time')}
-          style={styles.tabButton}>
+          style={[
+            styles.tabButton,
+            {
+              backgroundColor:
+                selectedTab === 'time' ? colors.tabSelected : colors.grey600,
+            },
+          ]}>
           <Text style={styles.tabText}>{contents('Time')}</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
+          activeOpacity={1}
           onPress={() => setSelectedTab('language')}
-          style={styles.tabButton}>
+          style={[
+            styles.tabButton,
+            {
+              backgroundColor:
+                selectedTab === 'language'
+                  ? colors.tabSelected
+                  : colors.grey600,
+            },
+          ]}>
           <Text style={styles.tabText}>{contents('Language')}</Text>
         </TouchableOpacity>
       </View>
@@ -320,13 +397,14 @@ const GenerateCustomQRCode = () => {
       </TouchableOpacity>
 
       {qrCodeValue ? (
-        <View style={styles.qrCodeContainer}>
-          <QRCode value={qrCodeValue} size={200} />
-          <TouchableOpacity style={styles.shareButton} onPress={shareQRCode}>
-            <Text style={styles.buttonText}>{contents('ShareQRCode')}</Text>
-          </TouchableOpacity>
-        </View>
-      ) : null}
+        <ShareDownloadComponent downloadUrl={qrCodeValue} />
+      ) : // <View style={styles.qrCodeContainer}>
+      //   <QRCode value={qrCodeValue} size={200} />
+      //   <TouchableOpacity style={styles.shareButton} onPress={shareQRCode}>
+      //     <Text style={styles.buttonText}>{contents('ShareQRCode')}</Text>
+      //   </TouchableOpacity>
+      // </View>
+      null}
     </View>
   );
 };
@@ -340,7 +418,7 @@ const styles = StyleSheet.create({
   sectionHeading: {
     fontSize: moderateScale(18),
     fontWeight: 'bold',
-    color: colors.grey900,
+    color: colors.black,
     marginBottom: moderateScale(10),
     marginTop: moderateScale(20),
   },
@@ -351,15 +429,17 @@ const styles = StyleSheet.create({
     borderColor: colors.grey100,
   },
   tabButton: {
-    backgroundColor: 'red',
     flex: 1,
-    padding: moderateScale(5),
+    padding: moderateScale(2),
     alignItems: 'center',
+    borderRadius: scaleWidth(5),
+    margin: scaleWidth(5),
   },
+
   tabText: {
     fontSize: moderateScale(16),
     fontWeight: 'bold',
-    color: colors.grey600,
+    color: colors.white,
   },
   fieldContainer: {
     marginBottom: moderateScale(20),
