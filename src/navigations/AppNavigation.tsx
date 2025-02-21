@@ -24,8 +24,8 @@ import TermsScreen from '../screens/TermsScreen';
 import AboutScreen from '../screens/AboutScreen';
 import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
 import {contents} from '../context';
-import GenerateBarCodeForEmail from '../screens/GenerateBarScreens/GenerateBarCodeForEmail';
 import GenerateCustomQRCode from '../screens/GenerateQRScreens/GenerateCustomQRCode';
+import BarcodeForProduct from '../screens/GenerateBarScreens/BarcodeForProduct';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -95,8 +95,8 @@ const StackNavigator = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="GenerateBarCodeForEmail"
-        component={GenerateBarCodeForEmail}
+        name="BarcodeForProduct"
+        component={BarcodeForProduct}
         options={{headerShown: false}}
       />
       <Stack.Screen

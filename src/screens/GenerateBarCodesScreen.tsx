@@ -26,13 +26,12 @@ type RootStackParamList = {
 };
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
-// Data for Barcode options
 const barcodeData = [
   {
     id: '1',
     name: 'Product Code',
     icon: 'barcode',
-    screen: 'GenerateBarCodeForEmail',
+    screen: 'BarcodeForProduct',
   },
   {
     id: '2',

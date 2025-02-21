@@ -1,5 +1,12 @@
 import React, {useRef} from 'react';
-import {View, Text, TouchableOpacity, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+  PermissionsAndroid,
+  Platform,
+} from 'react-native';
 import ViewShot from 'react-native-view-shot';
 import Share from 'react-native-share';
 import QRCode from 'react-native-qrcode-svg';
@@ -7,7 +14,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {moderateScale} from '../../utils/dimensions';
 import {colors} from '../../utils/LightTheme';
 import {contents} from '../../context';
-
+import {CameraRoll} from '@react-native-camera-roll/camera-roll';
+import RNFS from 'react-native-fs';
 interface ShareDownloadComponentProps {
   downloadUrl: string | null;
 }
@@ -40,11 +48,48 @@ const ShareDownloadComponent: React.FC<ShareDownloadComponentProps> = ({
   };
 
   const downloadQRCode = async () => {
-    Alert.alert(
-      contents('DownloadQRCodeTitle'),
-      contents('DownloadQRCodeMessage'),
-    );
-    // Implement actual QR download logic if needed
+    if (!viewShotRef.current) {
+      Alert.alert(contents('Error'), contents('DownloadQRCodeError'));
+      return;
+    }
+
+    try {
+      // Capture the QR code image
+      const uri = await viewShotRef?.current?.capture();
+      if (!uri) {
+        Alert.alert(contents('Error'), contents('QRGenerationFailed'));
+        return;
+      }
+
+      // Define the path where the file should be saved
+      const filePath = `${RNFS.PicturesDirectoryPath}/QRCode_${Date.now()}.png`;
+
+      // Move the file to the desired location
+      await RNFS.moveFile(uri, filePath);
+
+      if (Platform.OS === 'android') {
+        // Request permission to save to gallery
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        );
+
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          Alert.alert(
+            contents('PermissionDenied'),
+            contents('StoragePermissionError'),
+          );
+          return;
+        }
+      }
+
+      // Save to the user's gallery
+      await CameraRoll.save(filePath, {type: 'photo'});
+
+      Alert.alert(contents('Success'), contents('DownloadQRCodeSuccess'));
+    } catch (error) {
+      console.error(contents('DownloadError'), error);
+      Alert.alert(contents('Error'), contents('DownloadQRCodeError'));
+    }
   };
 
   return (
