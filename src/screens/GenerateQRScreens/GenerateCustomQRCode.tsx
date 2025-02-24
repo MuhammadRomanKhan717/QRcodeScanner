@@ -220,6 +220,15 @@ const styles = StyleSheet.create({
     padding: moderateScale(20),
     backgroundColor: colors.white,
   },
+  wrapper: {
+    padding: moderateScale(20),
+  },
+  title: {
+    fontSize: fontSize.textSize21,
+    fontWeight: '500',
+    textAlign: 'center',
+    marginBottom: moderateScale(10),
+  },
   contentContainer: {paddingBottom: moderateScale(20)},
   entryContainer: {
     flexDirection: 'row',

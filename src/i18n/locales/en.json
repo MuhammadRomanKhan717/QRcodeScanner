@@ -191,6 +191,7 @@
     "FileUploaded": "File Uploaded",
     "NoInputTextError": "Please enter text before generating the QR code.",
 
+    "UploadFileOrEnterText":"Upload file or enter text",
     "":"",
   }
   
