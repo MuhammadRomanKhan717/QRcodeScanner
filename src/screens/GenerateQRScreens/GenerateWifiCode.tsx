@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   ScrollView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
@@ -13,8 +12,9 @@ import QRCode from 'react-native-qrcode-svg';
 import {Picker} from '@react-native-picker/picker';
 import Header from '../../components/commonComponents/Header';
 import {moderateScale} from '../../utils/dimensions';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {colors} from '../../utils/LightTheme';
-import Animated, {FadeIn, FadeOut, BounceIn} from 'react-native-reanimated';
+import Animated, {FadeIn, BounceIn} from 'react-native-reanimated';
 import {contents} from '../../context';
 import ShareDownloadComponent from '../../components/generateQRCodesComponent/ShareDownloadComponent';
 
@@ -22,12 +22,13 @@ const GenerateWifiCode: React.FC = () => {
   const navigation = useNavigation();
   const [ssid, setSsid] = useState('');
   const [password, setPassword] = useState('');
+  const [secureText, setSecureText] = useState(true);
   const [encryptionType, setEncryptionType] = useState<
     'WPA' | 'WEP' | 'NONE' | 'RAW'
   >('WPA');
   const [isActive, setIsActive] = useState(false);
   const [error, setError] = useState('');
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null); // ✅ FIXED ERROR
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const qrRef = useRef<QRCode | null>(null);
 
   const generateQRCode = () => {
@@ -38,9 +39,8 @@ const GenerateWifiCode: React.FC = () => {
     setError('');
     setIsActive(true);
 
-    // Generate QR Code URL
     const qrCodeValue = `WIFI:T:${encryptionType};S:${ssid};P:${password};;`;
-    setDownloadUrl(qrCodeValue); // ✅ FIXED ERROR
+    setDownloadUrl(qrCodeValue);
   };
 
   const clearInput = () => {
@@ -49,7 +49,7 @@ const GenerateWifiCode: React.FC = () => {
     setEncryptionType('WPA');
     setIsActive(false);
     setError('');
-    setDownloadUrl(null); // ✅ FIXED ERROR
+    setDownloadUrl(null);
   };
 
   return (
@@ -65,19 +65,35 @@ const GenerateWifiCode: React.FC = () => {
             {contents('EnterDetailGenerateCode')}
           </Animated.Text>
 
+          {/* SSID Input */}
           <TextInput
             style={styles.input}
             placeholder={contents('EnterSSID')}
             value={ssid}
             onChangeText={setSsid}
           />
-          <TextInput
-            style={styles.input}
-            placeholder={contents('EnterPassword')}
-            value={password}
-            secureTextEntry
-            onChangeText={setPassword}
-          />
+
+          {/* Password Input with Eye Icon */}
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder={contents('EnterPassword')}
+              value={password}
+              secureTextEntry={secureText}
+              onChangeText={setPassword}
+            />
+            <TouchableOpacity
+              onPress={() => setSecureText(!secureText)}
+              style={styles.iconContainer}>
+              <Icon
+                name={secureText ? 'eye-off' : 'eye'}
+                size={24}
+                color="gray"
+              />
+            </TouchableOpacity>
+          </View>
+
+          {/* Encryption Type Picker */}
           <Picker
             selectedValue={encryptionType}
             style={styles.picker}
@@ -98,13 +114,9 @@ const GenerateWifiCode: React.FC = () => {
             </TouchableOpacity>
           </Animated.View>
 
-          {isActive &&
-            downloadUrl && ( // ✅ FIXED ERROR
-              <ShareDownloadComponent
-                downloadUrl={downloadUrl}
-                isActive={true}
-              />
-            )}
+          {isActive && downloadUrl && (
+            <ShareDownloadComponent downloadUrl={downloadUrl} isActive={true} />
+          )}
         </View>
       </ScrollView>
     </View>
@@ -135,6 +147,36 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(5),
     marginBottom: moderateScale(15),
   },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#999',
+    borderRadius: moderateScale(5),
+    paddingHorizontal: moderateScale(10),
+    marginBottom: moderateScale(15),
+  },
+  passwordInput: {
+    flex: 1,
+    fontSize: moderateScale(18),
+    paddingVertical: moderateScale(10),
+  },
+  iconContainer: {
+    padding: moderateScale(10),
+  },
+  picker: {
+    height: moderateScale(50),
+    borderWidth: 1,
+    borderColor: '#999',
+    borderRadius: moderateScale(5),
+    marginBottom: moderateScale(15),
+  },
+  errorText: {
+    color: 'red',
+    fontSize: moderateScale(16),
+    marginBottom: moderateScale(10),
+    textAlign: 'center',
+  },
   button: {
     backgroundColor: colors.highlightSelected,
     padding: moderateScale(15),
@@ -144,9 +186,5 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: moderateScale(18),
-  },
-  qrCode: {
-    marginTop: moderateScale(20),
-    alignItems: 'center',
   },
 });

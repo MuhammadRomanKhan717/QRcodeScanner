@@ -27,6 +27,7 @@ type RootStackParamList = {
   QRcodeForMap: undefined;
   QRcodeForSocialMedia: undefined;
   QRCodeForVCard: undefined;
+  GenerateCustomQRCodeURL: undefined;
   GenerateCustomQRCode: undefined;
 };
 
@@ -87,8 +88,15 @@ const data: QRCodeItem[] = [
   },
   {
     id: '29',
-    name: contents('custom'),
+    name: contents('customURLText'),
     icon: 'qr-code',
+    screen: 'GenerateCustomQRCodeURL',
+    mode: 'custom',
+  },
+  {
+    id: '30',
+    name: contents('customQRcode'),
+    icon: 'dashboard-customize',
     screen: 'GenerateCustomQRCode',
     mode: 'custom',
   },
@@ -274,8 +282,12 @@ const getIconComponent = (iconName: string) => {
     'microsoft-excel',
     'email',
     'qr-code',
+    'view-dashboard-outline',
   ];
-  if (iconName === 'paypal') {
+
+  if (iconName === 'dashboard-customize') {
+    return <Icon name="view-dashboard-outline" size={24} color="#4CAF50" />;
+  } else if (iconName === 'paypal') {
     return <FontAwesome name="paypal" size={24} color="#4CAF50" />;
   } else if (iconName === 'etsy') {
     return <FontAwesome name="etsy" size={24} color="#4CAF50" />;
@@ -284,7 +296,6 @@ const getIconComponent = (iconName: string) => {
   } else if (iconName === 'tiktok') {
     return <MaterialIcons name="tiktok" size={24} color="#4CAF50" />;
   } else if (iconName === 'qr-code') {
-    // Handle 'qr-code' for custom
     return <Icon name="qrcode" size={24} color="#4CAF50" />;
   } else if (fontistoIcons.includes(iconName)) {
     return <Fontisto name={iconName} size={24} color="#4CAF50" />;
@@ -295,6 +306,7 @@ const getIconComponent = (iconName: string) => {
     return <Icon name="help-circle" size={24} color="red" />;
   }
 };
+
 const GenerateQRCodesScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
 

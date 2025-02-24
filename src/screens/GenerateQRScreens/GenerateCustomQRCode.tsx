@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -7,389 +7,116 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
+  Modal,
 } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'; // Use react-native-vector-icons
-import QRCode from 'react-native-qrcode-svg'; // QR code generation
-import Share from 'react-native-share'; // Sharing functionality
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import QRCode from 'react-native-qrcode-svg';
+import * as DocumentPicker from 'react-native-document-picker';
 import {contents} from '../../context';
 import {useNavigation} from '@react-navigation/native';
 import {moderateScale, scaleWidth} from '../../utils/dimensions';
-import {colors} from '../../utils/LightTheme';
+import {colors, fontSize} from '../../utils/LightTheme';
 import Header from '../../components/commonComponents/Header';
 import ShareDownloadComponent from '../../components/generateQRCodesComponent/ShareDownloadComponent';
-// Import the context
 
 const GenerateCustomQRCode = () => {
-  //   const {contents, setLanguage} = useLocalization(); // Use contents from context
   const navigation = useNavigation();
-  const [selectedTab, setSelectedTab] = useState<
-    'location' | 'scans' | 'time' | 'language'
-  >('location');
-  const [locations, setLocations] = useState<{country: string; url: string}[]>([
-    {country: '', url: ''},
-  ]);
-  const [scans, setScans] = useState<{numScans: number; url: string}[]>([
-    {numScans: 0, url: ''},
-  ]);
-  const [times, setTimes] = useState<
-    {timezone: string; timeStart: string; timeEnd: string; url: string}[]
-  >([{timezone: '', timeStart: '', timeEnd: '', url: ''}]);
-  const [languages, setLanguages] = useState<{language: string; url: string}[]>(
-    [{language: '', url: ''}],
-  );
-  const [qrCodeValue, setQrCodeValue] = useState<string | null>(null); // Keep the QR code value persistent
+  const [entries, setEntries] = useState<
+    {type: 'text' | 'file'; value: string}[]
+  >([]);
+  const [qrCodeValue, setQrCodeValue] = useState<string | null>(null);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
 
-  // Clear QR Code when switching tabs
-  useEffect(() => {
-    setQrCodeValue(null); // Clear QR code when tab changes
-  }, [selectedTab]);
-
-  // Add new location field
-  const addLocationField = () => {
-    setLocations(prevLocations => [...prevLocations, {country: '', url: ''}]);
-  };
-
-  // Add new scan field
-  const addScanField = () => {
-    setScans(prevScans => [...prevScans, {numScans: 0, url: ''}]);
-  };
-
-  // Add new time field
-  const addTimeField = () => {
-    setTimes(prevTimes => [
-      ...prevTimes,
-      {timezone: '', timeStart: '', timeEnd: '', url: ''},
-    ]);
-  };
-
-  // Add new language field
-  const addLanguageField = () => {
-    setLanguages(prevLanguages => [...prevLanguages, {language: '', url: ''}]);
-  };
-
-  // Handle changes for location, scan, time, and language fields
-  const handleFieldChange = (
-    index: number,
-    type:
-      | 'country'
-      | 'url'
-      | 'numScans'
-      | 'timezone'
-      | 'timeStart'
-      | 'timeEnd'
-      | 'language',
-    value: string,
-    fieldType: 'location' | 'scan' | 'time' | 'language',
-  ) => {
-    if (fieldType === 'location') {
-      const updatedLocations = [...locations];
-      updatedLocations[index][type] = value;
-      setLocations(updatedLocations);
-    } else if (fieldType === 'scan') {
-      const updatedScans = [...scans];
-      updatedScans[index][type] = value;
-      setScans(updatedScans);
-    } else if (fieldType === 'time') {
-      const updatedTimes = [...times];
-      updatedTimes[index][type] = value;
-      setTimes(updatedTimes);
-    } else {
-      const updatedLanguages = [...languages];
-      updatedLanguages[index][type] = value;
-      setLanguages(updatedLanguages);
-    }
-  };
-
-  // Generate QR Code based on the active tab
-  // Generate QR Code based on the active tab with validation
-  const generateQRCode = () => {
-    let data = '';
-
-    // Validate fields before generating QR code
-    const isValid = () => {
-      switch (selectedTab) {
-        case 'location':
-          return locations.every(
-            location => location.country.trim() && location.url.trim(),
-          );
-        case 'scans':
-          return scans.every(scan => scan.numScans > 0 && scan.url.trim());
-        case 'time':
-          return times.every(
-            time =>
-              time.timezone.trim() &&
-              time.timeStart.trim() &&
-              time.timeEnd.trim() &&
-              time.url.trim(),
-          );
-        case 'language':
-          return languages.every(
-            language => language.language.trim() && language.url.trim(),
-          );
-        default:
-          return false;
-      }
-    };
-
-    if (!isValid()) {
-      Alert.alert(contents('Error'), contents('FillAllFields')); // Show alert if any field is empty
-      return;
-    }
-
-    // Convert data to JSON based on the selected tab
-    switch (selectedTab) {
-      case 'location':
-        data = JSON.stringify(locations);
-        break;
-      case 'scans':
-        data = JSON.stringify(scans);
-        break;
-      case 'time':
-        data = JSON.stringify(times);
-        break;
-      case 'language':
-        data = JSON.stringify(languages);
-        break;
-      default:
-        data = 'No data available';
-        break;
-    }
-
-    setQrCodeValue(data); // Set QR code data
-  };
-
-  // Share QR Code
-  const shareQRCode = async () => {
-    if (!qrCodeValue) {
-      Alert.alert(contents('Error'), contents('GenerateQRCodeFirst'));
-      return;
-    }
+  const pickFile = async () => {
     try {
-      const options = {
-        title: contents('ShareQRCodeTitle'),
-        url: `data:image/png;base64,${qrCodeValue}`,
-        type: 'image/png',
-      };
-      await Share.open(options);
-    } catch (error) {
-      console.error(error);
+      const res = await DocumentPicker.pickSingle({
+        type: [
+          DocumentPicker.types.audio,
+          DocumentPicker.types.pdf,
+          DocumentPicker.types.images,
+        ],
+      });
+
+      setError('');
+      setModalVisible(false);
+      setEntries([...entries, {type: 'file', value: res.uri}]);
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        Alert.alert(contents('Cancelled'), contents('FileSelectionCancelled'));
+      } else {
+        setError(contents('FilePickError'));
+        console.error(err);
+      }
     }
   };
 
-  const renderContent = () => {
-    switch (selectedTab) {
-      case 'location':
-        return (
-          <View>
-            <Text style={styles.sectionHeading}>{contents('Location')}</Text>
-            {locations.map((location, index) => (
-              <View key={index} style={styles.fieldContainer}>
-                <TextInput
-                  style={styles.input}
-                  placeholder={contents('Country')}
-                  value={location.country}
-                  onChangeText={text =>
-                    handleFieldChange(index, 'country', text, 'location')
-                  }
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder={contents('URLLocation')}
-                  value={location.url}
-                  onChangeText={text =>
-                    handleFieldChange(index, 'url', text, 'location')
-                  }
-                />
-              </View>
-            ))}
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={addLocationField}>
-              <MaterialIcons name="add" size={24} color="#fff" />
-              <Text style={styles.addText}>{contents('AddLocation')}</Text>
-            </TouchableOpacity>
-          </View>
-        );
-      case 'scans':
-        return (
-          <View>
-            <Text style={styles.sectionHeading}>{contents('Scans')}</Text>
-            {scans.map((scan, index) => (
-              <View key={index} style={styles.fieldContainer}>
-                <TextInput
-                  style={styles.input}
-                  placeholder={contents('NumberOfScans')}
-                  value={String(scan.numScans)}
-                  onChangeText={text =>
-                    handleFieldChange(index, 'numScans', text, 'scan')
-                  }
-                  keyboardType="numeric"
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder={contents('URLforScan')}
-                  value={scan.url}
-                  onChangeText={text =>
-                    handleFieldChange(index, 'url', text, 'scan')
-                  }
-                />
-              </View>
-            ))}
-            <TouchableOpacity style={styles.addButton} onPress={addScanField}>
-              <MaterialIcons name="add" size={24} color="#fff" />
-              <Text style={styles.addText}>{contents('AddScan')}</Text>
-            </TouchableOpacity>
-          </View>
-        );
-      case 'time':
-        return (
-          <View>
-            <Text style={styles.sectionHeading}>{contents('Time')}</Text>
-            {times.map((time, index) => (
-              <View key={index} style={styles.fieldContainer}>
-                <TextInput
-                  style={styles.input}
-                  placeholder={contents('Timezone')}
-                  value={time.timezone}
-                  onChangeText={text =>
-                    handleFieldChange(index, 'timezone', text, 'time')
-                  }
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder={contents('TimeStart')}
-                  value={time.timeStart}
-                  onChangeText={text =>
-                    handleFieldChange(index, 'timeStart', text, 'time')
-                  }
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder={contents('TimeEnd')}
-                  value={time.timeEnd}
-                  onChangeText={text =>
-                    handleFieldChange(index, 'timeEnd', text, 'time')
-                  }
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder={contents('URLTime')}
-                  value={time.url}
-                  onChangeText={text =>
-                    handleFieldChange(index, 'url', text, 'time')
-                  }
-                />
-              </View>
-            ))}
-            <TouchableOpacity style={styles.addButton} onPress={addTimeField}>
-              <MaterialIcons name="add" size={24} color="#fff" />
-              <Text style={styles.addText}>{contents('AddTime')}</Text>
-            </TouchableOpacity>
-          </View>
-        );
-      case 'language':
-        return (
-          <View>
-            <Text style={styles.sectionHeading}>{contents('Language')}</Text>
-            {languages.map((language, index) => (
-              <View key={index} style={styles.fieldContainer}>
-                <TextInput
-                  style={styles.input}
-                  placeholder={contents('Language')}
-                  value={language.language}
-                  onChangeText={text =>
-                    handleFieldChange(index, 'language', text, 'language')
-                  }
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder={contents('URLLanguage')}
-                  value={language.url}
-                  onChangeText={text =>
-                    handleFieldChange(index, 'url', text, 'language')
-                  }
-                />
-              </View>
-            ))}
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={addLanguageField}>
-              <MaterialIcons name="add" size={24} color="#fff" />
-              <Text style={styles.addText}>{contents('AddLanguage')}</Text>
-            </TouchableOpacity>
-          </View>
-        );
-      default:
-        return null;
+  const addTextField = () => {
+    setEntries([...entries, {type: 'text', value: ''}]);
+    setModalVisible(false);
+  };
+
+  const handleTextChange = (text: string, index: number) => {
+    const updatedEntries = [...entries];
+    updatedEntries[index].value = text;
+    setEntries(updatedEntries);
+  };
+
+  const removeField = (index: number) => {
+    setEntries(entries.filter((_, i) => i !== index));
+  };
+
+  const getQRCodeData = () => {
+    return entries
+      .map(entry => entry.value)
+      .join('\n')
+      .trim();
+  };
+
+  const generateQRCode = () => {
+    if (!getQRCodeData()) {
+      Alert.alert(contents('Error'), contents('NoInputTextError'));
+      return;
     }
+    setQrCodeValue(getQRCodeData());
   };
 
   return (
     <View style={styles.container}>
       <Header
-        title={contents('customURL')}
+        title={contents('GenerateCustomQRCode')}
         onBackPress={() => navigation.goBack()}
       />
-      <View style={styles.tabBar}>
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={() => setSelectedTab('location')}
-          style={[
-            styles.tabButton,
-            {
-              backgroundColor:
-                selectedTab === 'location'
-                  ? colors.tabSelected
-                  : colors.grey600,
-            },
-          ]}>
-          <Text style={styles.tabText}>{contents('Location')}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={() => setSelectedTab('scans')}
-          style={[
-            styles.tabButton,
-            {
-              backgroundColor:
-                selectedTab === 'scans' ? colors.tabSelected : colors.grey600,
-            },
-          ]}>
-          <Text style={styles.tabText}>{contents('Scans')}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={() => setSelectedTab('time')}
-          style={[
-            styles.tabButton,
-            {
-              backgroundColor:
-                selectedTab === 'time' ? colors.tabSelected : colors.grey600,
-            },
-          ]}>
-          <Text style={styles.tabText}>{contents('Time')}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={() => setSelectedTab('language')}
-          style={[
-            styles.tabButton,
-            {
-              backgroundColor:
-                selectedTab === 'language'
-                  ? colors.tabSelected
-                  : colors.grey600,
-            },
-          ]}>
-          <Text style={styles.tabText}>{contents('Language')}</Text>
-        </TouchableOpacity>
-      </View>
 
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        {renderContent()}
+        {entries.map((entry, index) => (
+          <View key={index} style={styles.entryContainer}>
+            {entry.type === 'text' ? (
+              <TextInput
+                style={styles.input}
+                placeholder={contents('EnterTextForQR')}
+                placeholderTextColor={colors.grey600}
+                value={entry.value}
+                onChangeText={text => handleTextChange(text, index)}
+              />
+            ) : (
+              <Text style={styles.fileText}>{contents('FileUploaded')}</Text>
+            )}
+
+            <TouchableOpacity
+              onPress={() => removeField(index)}
+              style={styles.deleteButton}>
+              <MaterialIcons name="close" size={24} color={colors.error} />
+            </TouchableOpacity>
+          </View>
+        ))}
+
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => setModalVisible(true)}>
+          <MaterialIcons name="add-circle" size={24} color={colors.white} />
+          <Text style={styles.addButtonText}>{contents('AddMore')}</Text>
+        </TouchableOpacity>
       </ScrollView>
 
       <TouchableOpacity style={styles.generateButton} onPress={generateQRCode}>
@@ -398,16 +125,50 @@ const GenerateCustomQRCode = () => {
 
       {qrCodeValue ? (
         <ShareDownloadComponent downloadUrl={qrCodeValue} />
-      ) : // <View style={styles.qrCodeContainer}>
-      //   <QRCode value={qrCodeValue} size={200} />
-      //   <TouchableOpacity style={styles.shareButton} onPress={shareQRCode}>
-      //     <Text style={styles.buttonText}>{contents('ShareQRCode')}</Text>
-      //   </TouchableOpacity>
-      // </View>
-      null}
+      ) : (
+        <Text style={styles.warningText}>{contents('NoInputTextError')}</Text>
+      )}
+
+      <Modal visible={modalVisible} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>{contents('ChooseQRContent')}</Text>
+
+            <TouchableOpacity style={styles.modalButton} onPress={pickFile}>
+              <MaterialIcons
+                name="file-upload"
+                size={24}
+                color={colors.white}
+              />
+              <Text style={styles.modalButtonText}>
+                {contents('UploadFile')}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.modalButton} onPress={addTextField}>
+              <MaterialIcons
+                name="text-fields"
+                size={24}
+                color={colors.white}
+              />
+              <Text style={styles.modalButtonText}>
+                {contents('EnterTextForQR')}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.modalButtonClose}
+              onPress={() => setModalVisible(false)}>
+              <Text style={styles.modalButtonText}>{contents('Close')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
+
+export default GenerateCustomQRCode;
 
 const styles = StyleSheet.create({
   container: {
@@ -415,61 +176,39 @@ const styles = StyleSheet.create({
     padding: moderateScale(20),
     backgroundColor: colors.white,
   },
-  sectionHeading: {
-    fontSize: moderateScale(18),
-    fontWeight: 'bold',
-    color: colors.black,
-    marginBottom: moderateScale(10),
-    marginTop: moderateScale(20),
-  },
-  tabBar: {
-    flexDirection: 'row',
-    marginBottom: moderateScale(20),
-    borderBottomWidth: 1,
-    borderColor: colors.grey100,
-  },
-  tabButton: {
-    flex: 1,
-    padding: moderateScale(2),
-    alignItems: 'center',
-    borderRadius: scaleWidth(5),
-    margin: scaleWidth(5),
-  },
-
-  tabText: {
-    fontSize: moderateScale(16),
-    fontWeight: 'bold',
-    color: colors.white,
-  },
-  fieldContainer: {
-    marginBottom: moderateScale(20),
-  },
-  input: {
-    height: moderateScale(50),
-    borderWidth: 1,
-    borderColor: colors.grey200,
-    marginBottom: moderateScale(10),
-    paddingHorizontal: moderateScale(10),
-    borderRadius: moderateScale(8),
-  },
-  addButton: {
+  contentContainer: {paddingBottom: moderateScale(20)},
+  entryContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: moderateScale(10),
-    backgroundColor: colors.highlightSelected,
-    paddingVertical: moderateScale(8),
-    paddingHorizontal: moderateScale(15),
-    borderRadius: moderateScale(8),
+    backgroundColor: colors.grey100,
+    padding: moderateScale(10),
+    borderRadius: 10,
   },
-  addText: {
-    color: colors.white,
+  input: {
+    flex: 1,
+    fontSize: moderateScale(18),
+    padding: moderateScale(10),
+    color: colors.blackText,
+  },
+  deleteButton: {marginLeft: 10},
+  addButton: {
+    flexDirection: 'row',
+    backgroundColor: colors.success,
+    padding: moderateScale(12),
+    borderRadius: moderateScale(10),
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    marginTop: moderateScale(10),
+  },
+  addButtonText: {
+    color: colors.whiteText,
+    fontSize: moderateScale(16),
     marginLeft: moderateScale(5),
   },
-  contentContainer: {
-    paddingBottom: moderateScale(20),
-  },
   generateButton: {
-    backgroundColor: colors.success,
+    backgroundColor: colors.highlightSelected,
     paddingVertical: moderateScale(15),
     borderRadius: moderateScale(8),
     alignItems: 'center',
@@ -477,20 +216,54 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: colors.white,
-    fontSize: moderateScale(16),
+    fontSize: fontSize.textSize16,
     fontWeight: 'bold',
   },
-  qrCodeContainer: {
-    alignItems: 'center',
-    marginTop: moderateScale(20),
-  },
-  shareButton: {
-    backgroundColor: colors.highlightSelected,
-    paddingVertical: moderateScale(15),
-    borderRadius: moderateScale(8),
-    alignItems: 'center',
+  warningText: {
+    color: colors.warning,
+    fontSize: moderateScale(14),
     marginTop: moderateScale(10),
+    textAlign: 'center',
+  },
+  qrCodeContainer: {alignItems: 'center', marginTop: moderateScale(20)},
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    width: '85%',
+    backgroundColor: colors.white,
+    padding: moderateScale(20),
+    borderRadius: 12,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 6,
+  },
+  modalTitle: {
+    fontSize: moderateScale(18),
+    fontWeight: '600',
+    color: colors.blackText,
+    marginBottom: moderateScale(10),
+    textAlign: 'center',
+  },
+  modalButton: {
+    flexDirection: 'row',
+    backgroundColor: colors.tabSelected,
+    padding: moderateScale(12),
+    borderRadius: 10,
+    marginVertical: 8,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalButtonText: {
+    color: colors.whiteText,
+    fontSize: moderateScale(16),
+    marginLeft: moderateScale(8),
   },
 });
-
-export default GenerateCustomQRCode;

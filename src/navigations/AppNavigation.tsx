@@ -24,8 +24,10 @@ import TermsScreen from '../screens/TermsScreen';
 import AboutScreen from '../screens/AboutScreen';
 import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
 import {contents} from '../context';
-import GenerateCustomQRCode from '../screens/GenerateQRScreens/GenerateCustomQRCode';
+// import GenerateCustomQRCodeURL from '../screens/GenerateQRScreens/GenerateCustomQRCodeURL';
 import BarcodeForProduct from '../screens/GenerateBarScreens/BarcodeForProduct';
+import GenerateCustomQRCodeURL from '../screens/GenerateQRScreens/GenerateCustomQRCodeURL.tsx';
+import GenerateCustomQRCode from '../screens/GenerateQRScreens/GenerateCustomQRCode.tsx';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -97,6 +99,11 @@ const StackNavigator = () => {
       <Stack.Screen
         name="BarcodeForProduct"
         component={BarcodeForProduct}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="GenerateCustomQRCodeURL"
+        component={GenerateCustomQRCodeURL}
         options={{headerShown: false}}
       />
       <Stack.Screen

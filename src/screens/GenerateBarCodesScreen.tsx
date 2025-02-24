@@ -39,7 +39,7 @@ const barcodeData = [
     icon: 'barcode',
     screen: 'MakePDFfileScreen',
   },
-  {id: '3', name: 'Shipping Label', icon: 'barcode', screen: 'BarcodeScreen'},
+  // {id: '3', name: 'Shipping Label', icon: 'barcode', screen: 'BarcodeScreen'},
 ];
 
 const GenerateBarCodesScreen: React.FC = () => {

@@ -37,6 +37,17 @@ const BarcodeForProduct = () => {
     });
   };
 
+  // Function to determine barcode size dynamically
+  const getBarcodeSize = (text: string) => {
+    if (text.length <= 10) {
+      return {width: scaleWidth(2.5), height: scaleHeight(80)}; // Large Barcode
+    } else if (text.length <= 20) {
+      return {width: scaleWidth(2.0), height: scaleHeight(50)}; // Medium Barcode
+    } else {
+      return {width: scaleWidth(1.5), height: scaleHeight(30)}; // Small Barcode
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Barcode Generator</Text>
@@ -57,19 +68,27 @@ const BarcodeForProduct = () => {
 
       <TextInput
         style={styles.input}
-        placeholder="Enter barcode value"
+        placeholder="Enter text or URL"
         value={inputValue}
         onChangeText={setInputValue}
       />
       <Button title="Generate Barcode" onPress={generateBarcode} />
 
       <ScrollView style={styles.barcodeList}>
-        {barcodeValues.map((value, index) => (
-          <View key={index} style={styles.barcodeContainer}>
-            <Barcode value={value} format="CODE128" />
-            <Text style={styles.barcodeText}>{value}</Text>
-          </View>
-        ))}
+        {barcodeValues.map((value, index) => {
+          const {width, height} = getBarcodeSize(value);
+          return (
+            <View key={index} style={styles.barcodeContainer}>
+              <Barcode
+                value={value}
+                format="CODE39"
+                width={width}
+                height={height}
+              />
+              <Text style={styles.barcodeText}>{value}</Text>
+            </View>
+          );
+        })}
       </ScrollView>
     </View>
   );
