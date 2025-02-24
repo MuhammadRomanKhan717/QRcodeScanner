@@ -15,7 +15,7 @@ import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Header from '../../components/commonComponents/Header';
 import {moderateScale} from '../../utils/dimensions';
-import {colors} from '../../utils/LightTheme';
+import {colors, fontSize} from '../../utils/LightTheme';
 import Animated, {FadeIn, FadeOut, BounceIn} from 'react-native-reanimated';
 import {contents} from '../../context';
 import ShareDownloadComponent from '../../components/generateQRCodesComponent/ShareDownloadComponent';
@@ -34,7 +34,15 @@ const QRCodeForAudio = () => {
   const pickFile = async () => {
     try {
       const res = await DocumentPicker.pickSingle({
-        type: [DocumentPicker.types.audio, DocumentPicker.types.pdf],
+        type: [
+          DocumentPicker.types.audio,
+          DocumentPicker.types.pdf,
+          DocumentPicker.types.images,
+          DocumentPicker.types.video,
+          DocumentPicker.types.allFiles,
+          DocumentPicker.types.zip,
+          DocumentPicker.types.xls,
+        ],
       });
       setFileUri(res.uri);
       setError('');
@@ -134,7 +142,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: moderateScale(21),
+    fontSize: fontSize.textSize21,
     fontWeight: '500',
     textAlign: 'center',
     marginBottom: moderateScale(10),
@@ -159,12 +167,12 @@ const styles = StyleSheet.create({
   },
   uploadButtonText: {
     color: colors.white,
-    fontSize: moderateScale(16),
+    fontSize: fontSize.textSize16,
     marginLeft: moderateScale(5),
   },
   errorText: {
     color: 'red',
-    fontSize: moderateScale(14),
+    fontSize: fontSize.textSize14,
     marginTop: moderateScale(5),
   },
 });

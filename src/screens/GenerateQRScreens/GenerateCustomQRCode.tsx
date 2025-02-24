@@ -5,18 +5,21 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
   Alert,
+  ActivityIndicator,
+  ScrollView,
   Modal,
 } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import QRCode from 'react-native-qrcode-svg';
-import * as DocumentPicker from 'react-native-document-picker';
-import {contents} from '../../context';
 import {useNavigation} from '@react-navigation/native';
-import {moderateScale, scaleWidth} from '../../utils/dimensions';
-import {colors, fontSize} from '../../utils/LightTheme';
+import DocumentPicker from 'react-native-document-picker';
+import axios from 'axios';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Header from '../../components/commonComponents/Header';
+import {moderateScale} from '../../utils/dimensions';
+import {colors, fontSize} from '../../utils/LightTheme';
+import Animated, {FadeIn, BounceIn} from 'react-native-reanimated';
+import {contents} from '../../context';
 import ShareDownloadComponent from '../../components/generateQRCodesComponent/ShareDownloadComponent';
 
 const GenerateCustomQRCode = () => {
@@ -24,10 +27,12 @@ const GenerateCustomQRCode = () => {
   const [entries, setEntries] = useState<
     {type: 'text' | 'file'; value: string}[]
   >([]);
-  const [qrCodeValue, setQrCodeValue] = useState<string | null>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState('');
 
+  // Pick file function
   const pickFile = async () => {
     try {
       const res = await DocumentPicker.pickSingle({
@@ -35,12 +40,21 @@ const GenerateCustomQRCode = () => {
           DocumentPicker.types.audio,
           DocumentPicker.types.pdf,
           DocumentPicker.types.images,
+          DocumentPicker.types.video,
+          DocumentPicker.types.allFiles,
+          DocumentPicker.types.zip,
+          DocumentPicker.types.xls,
         ],
       });
 
+      if (!res || !res.uri) {
+        setError(contents('FilePickError'));
+        return;
+      }
+
       setError('');
-      setModalVisible(false);
       setEntries([...entries, {type: 'file', value: res.uri}]);
+      uploadFileToGoFile(res);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         Alert.alert(contents('Cancelled'), contents('FileSelectionCancelled'));
@@ -51,34 +65,52 @@ const GenerateCustomQRCode = () => {
     }
   };
 
+  // Upload file function
+  const uploadFileToGoFile = async file => {
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', {
+        uri: file.uri,
+        name: file.name,
+        type: file.type,
+      });
+
+      const response = await axios.post(
+        'https://store1.gofile.io/uploadFile',
+        formData,
+        {headers: {'Content-Type': 'multipart/form-data'}},
+      );
+
+      if (response.data.status === 'ok') {
+        setDownloadUrl(response.data.data.downloadPage);
+        setError('');
+      } else {
+        throw new Error(contents('UploadFailed'));
+      }
+    } catch (error) {
+      setError(contents('UploadError'));
+      console.error(error);
+    }
+    setLoading(false);
+  };
+
+  // Add new text field
   const addTextField = () => {
     setEntries([...entries, {type: 'text', value: ''}]);
     setModalVisible(false);
   };
 
+  // Handle text input change
   const handleTextChange = (text: string, index: number) => {
     const updatedEntries = [...entries];
     updatedEntries[index].value = text;
     setEntries(updatedEntries);
   };
 
+  // Remove field
   const removeField = (index: number) => {
     setEntries(entries.filter((_, i) => i !== index));
-  };
-
-  const getQRCodeData = () => {
-    return entries
-      .map(entry => entry.value)
-      .join('\n')
-      .trim();
-  };
-
-  const generateQRCode = () => {
-    if (!getQRCodeData()) {
-      Alert.alert(contents('Error'), contents('NoInputTextError'));
-      return;
-    }
-    setQrCodeValue(getQRCodeData());
   };
 
   return (
@@ -88,7 +120,12 @@ const GenerateCustomQRCode = () => {
         onBackPress={() => navigation.goBack()}
       />
 
-      <ScrollView contentContainerStyle={styles.contentContainer}>
+      <ScrollView contentContainerStyle={styles.wrapper}>
+        <Animated.Text entering={FadeIn.duration(500)} style={styles.title}>
+          {contents('UploadFileOrEnterText')}
+        </Animated.Text>
+
+        {/* Display added text fields and files */}
         {entries.map((entry, index) => (
           <View key={index} style={styles.entryContainer}>
             {entry.type === 'text' ? (
@@ -102,7 +139,6 @@ const GenerateCustomQRCode = () => {
             ) : (
               <Text style={styles.fileText}>{contents('FileUploaded')}</Text>
             )}
-
             <TouchableOpacity
               onPress={() => removeField(index)}
               style={styles.deleteButton}>
@@ -111,6 +147,7 @@ const GenerateCustomQRCode = () => {
           </View>
         ))}
 
+        {/* Button to open modal for adding text or uploading file */}
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => setModalVisible(true)}>
@@ -119,30 +156,37 @@ const GenerateCustomQRCode = () => {
         </TouchableOpacity>
       </ScrollView>
 
-      <TouchableOpacity style={styles.generateButton} onPress={generateQRCode}>
-        <Text style={styles.buttonText}>{contents('GenerateQRCode')}</Text>
-      </TouchableOpacity>
-
-      {qrCodeValue ? (
-        <ShareDownloadComponent downloadUrl={qrCodeValue} />
-      ) : (
-        <Text style={styles.warningText}>{contents('NoInputTextError')}</Text>
+      {/* Show QR code download component if file is uploaded */}
+      {downloadUrl && (
+        <Animated.View entering={BounceIn.duration(700)}>
+          <ShareDownloadComponent downloadUrl={downloadUrl} isActive={true} />
+        </Animated.View>
       )}
 
+      {/* Modal for adding text or uploading file */}
       <Modal visible={modalVisible} transparent animationType="slide">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>{contents('ChooseQRContent')}</Text>
 
-            <TouchableOpacity style={styles.modalButton} onPress={pickFile}>
-              <MaterialIcons
-                name="file-upload"
-                size={24}
-                color={colors.white}
-              />
-              <Text style={styles.modalButtonText}>
-                {contents('UploadFile')}
-              </Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={pickFile}
+              disabled={loading}>
+              {loading ? (
+                <ActivityIndicator size="small" color={colors.white} />
+              ) : (
+                <>
+                  <MaterialIcons
+                    name="file-upload"
+                    size={24}
+                    color={colors.white}
+                  />
+                  <Text style={styles.modalButtonText}>
+                    {contents('UploadFile')}
+                  </Text>
+                </>
+              )}
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.modalButton} onPress={addTextField}>
@@ -187,7 +231,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize: moderateScale(18),
+    fontSize: fontSize.textSize18,
     padding: moderateScale(10),
     color: colors.blackText,
   },
@@ -204,7 +248,7 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     color: colors.whiteText,
-    fontSize: moderateScale(16),
+    fontSize: fontSize.textSize16,
     marginLeft: moderateScale(5),
   },
   generateButton: {
@@ -221,7 +265,7 @@ const styles = StyleSheet.create({
   },
   warningText: {
     color: colors.warning,
-    fontSize: moderateScale(14),
+    fontSize: fontSize.textSize14,
     marginTop: moderateScale(10),
     textAlign: 'center',
   },
@@ -245,7 +289,7 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   modalTitle: {
-    fontSize: moderateScale(18),
+    fontSize: fontSize.textSize18,
     fontWeight: '600',
     color: colors.blackText,
     marginBottom: moderateScale(10),
@@ -263,7 +307,17 @@ const styles = StyleSheet.create({
   },
   modalButtonText: {
     color: colors.whiteText,
-    fontSize: moderateScale(16),
+    fontSize: fontSize.textSize16,
     marginLeft: moderateScale(8),
+  },
+  modalButtonClose: {
+    flexDirection: 'row',
+    backgroundColor: colors.warning,
+    padding: moderateScale(12),
+    borderRadius: 10,
+    marginVertical: 8,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
