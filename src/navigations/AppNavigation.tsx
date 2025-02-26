@@ -28,6 +28,7 @@ import {contents} from '../context';
 import BarcodeForProduct from '../screens/GenerateBarScreens/BarcodeForProduct';
 import GenerateCustomQRCodeURL from '../screens/GenerateQRScreens/GenerateCustomQRCodeURL.tsx';
 import GenerateCustomQRCode from '../screens/GenerateQRScreens/GenerateCustomQRCode.tsx';
+import SplashScreen from '../screens/SplashScreen.tsx';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -35,7 +36,12 @@ const Drawer = createDrawerNavigator();
 // 🔹 Stack Navigator (for Main App Screens)
 const StackNavigator = () => {
   return (
-    <Stack.Navigator initialRouteName="HomeScreen">
+    <Stack.Navigator initialRouteName="SplashScreen">
+      <Stack.Screen
+        name="SplashScreen"
+        component={SplashScreen}
+        options={{headerShown: false}}
+      />
       <Stack.Screen
         name="HomeScreen"
         component={HomeScreen}
