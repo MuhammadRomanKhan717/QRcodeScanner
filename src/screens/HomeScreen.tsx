@@ -24,7 +24,7 @@ const HomeScreen = () => {
     },
     {
       id: '2',
-      screen: 'GenerateBarCodesScreen',
+      screen: 'BarcodeForProduct',
       icon: <MaterialCommunityIcons name="barcode" />,
       iconSize: 50,
       iconColor: '#2196F3',

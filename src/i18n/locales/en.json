@@ -190,8 +190,12 @@
     "UploadInProgress": "Uploading file...",
     "FileUploaded": "File Uploaded",
     "NoInputTextError": "Please enter text before generating the QR code.",
-
     "UploadFileOrEnterText":"Upload file or enter text",
+    "BarcodeGenerator": "Barcode Generator",
+    "PickImage": "Pick an Image",
+    "EnterTextOrURL": "Enter text or URL",
+    "GenerateBarcode": "Generate Barcode",
+    "AllQRCodes": "All QR Codes",
     "":"",
   }
   

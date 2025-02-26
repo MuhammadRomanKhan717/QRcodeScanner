@@ -10,7 +10,7 @@ const ScanQRCodesScreen = () => {
   const navigation = useNavigation();
   const cameraRef = useRef(null);
   const [flashMode, setFlashMode] = useState('off');
-  const [scannedData, setScannedData] = useState(null);
+  const [scannedData, setScannedData] = useState('');
   const [showCamera, setShowCamera] = useState(true);
 
   const handleBarcodeScan = event => {

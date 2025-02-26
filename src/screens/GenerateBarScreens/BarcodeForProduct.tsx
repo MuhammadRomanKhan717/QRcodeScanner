@@ -6,95 +6,132 @@ import {
   StyleSheet,
   Button,
   ScrollView,
-  Image,
   TouchableOpacity,
+  FlatList,
+  Alert,
 } from 'react-native';
-import Barcode from 'react-native-barcode-svg';
+import {useNavigation} from '@react-navigation/native';
+import Barcode from 'react-native-barcode-svg'; // Barcode library
 import {launchImageLibrary} from 'react-native-image-picker';
 import FastImage from 'react-native-fast-image';
 import {moderateScale, scaleHeight, scaleWidth} from '../../utils/dimensions';
 import {colors} from '../../utils/LightTheme';
+import Header from '../../components/commonComponents/Header';
+import ShareDownloadComponent from '../../components/generateQRCodesComponent/ShareDownloadComponent'; // Assuming this component is reusable
 
 const BarcodeForProduct = () => {
+  const navigation = useNavigation();
   const [barcodeValues, setBarcodeValues] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
-  const [imageUri, setImageUri] = useState<string | null>(null);
+  const [imageUris, setImageUris] = useState<string[]>([]); // To store image URIs
+  const [isActive, setIsActive] = useState(false);
+  const [downloadUrl, setDownloadUrl] = useState<string>('');
 
-  // Function to generate barcode
+  // Function to generate Barcode
   const generateBarcode = () => {
     if (inputValue.trim() !== '') {
-      setBarcodeValues([...barcodeValues, inputValue]);
+      setBarcodeValues([inputValue]);
       setInputValue('');
+      setIsActive(true);
+      setDownloadUrl(`https://example.com/barcode-download-url/${inputValue}`); // Dynamic download URL based on input
+    } else {
+      Alert.alert('Please enter text before generating barcode!');
     }
   };
 
   // Function to pick an image
   const pickImage = () => {
+    if (imageUris.length >= 5) {
+      alert('You can only upload 5 images');
+      return; // Stop if 5 images are already uploaded
+    }
+
     launchImageLibrary({mediaType: 'photo'}, response => {
       if (response.assets && response.assets.length > 0) {
-        setImageUri(response.assets[0].uri || null);
+        const newImageUri = response.assets[0].uri || null;
+        if (newImageUri && !imageUris.includes(newImageUri)) {
+          setImageUris(prevUris => [...prevUris, newImageUri]);
+        }
       }
     });
   };
 
-  // Function to determine barcode size dynamically
-  const getBarcodeSize = (text: string) => {
-    if (text.length <= 10) {
-      return {width: scaleWidth(2.5), height: scaleHeight(80)}; // Large Barcode
-    } else if (text.length <= 20) {
-      return {width: scaleWidth(2.0), height: scaleHeight(50)}; // Medium Barcode
-    } else {
-      return {width: scaleWidth(1.5), height: scaleHeight(30)}; // Small Barcode
-    }
-  };
+  const renderImageItem = ({item}: {item: string}) => (
+    <View style={styles.imageContainer}>
+      <FastImage
+        source={{uri: item}}
+        style={styles.uploadedImage}
+        resizeMode={FastImage.resizeMode.contain}
+      />
+    </View>
+  );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Barcode Generator</Text>
+      <Header
+        onBackPress={() => navigation.goBack()}
+        title="Barcode Generator"
+      />
 
       {/* Image Picker Button */}
       <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
-        <Text style={styles.imagePickerText}>Pick an Image</Text>
+        <Text style={styles.imagePickerText}>Pick Image</Text>
       </TouchableOpacity>
 
-      {/* Display Selected Image */}
-      {imageUri && (
-        <FastImage
-          source={{uri: imageUri}}
-          style={styles.image}
-          resizeMode="contain"
+      {/* Display Uploaded Images */}
+      {imageUris.length > 0 && (
+        <FlatList
+          data={imageUris}
+          renderItem={renderImageItem}
+          keyExtractor={(item, index) => index.toString()}
+          horizontal
+          style={styles.imageList}
         />
       )}
 
+      {/* Text Input for Barcode Generation */}
       <TextInput
         style={styles.input}
-        placeholder="Enter text or URL"
+        placeholder="Enter text for barcode"
         value={inputValue}
         onChangeText={setInputValue}
       />
-      <Button title="Generate Barcode" onPress={generateBarcode} />
 
+      {/* Button to generate barcode */}
+      <Button title="Generate Barcode" onPress={generateBarcode} />
+      {/* Display barcode */}
       <ScrollView style={styles.barcodeList}>
-        {barcodeValues.map((value, index) => {
-          const {width, height} = getBarcodeSize(value);
-          return (
-            <View key={index} style={styles.barcodeContainer}>
-              <Barcode
-                value={value}
-                format="CODE39"
-                width={width}
-                height={height}
-              />
-              <Text style={styles.barcodeText}>{value}</Text>
-            </View>
-          );
-        })}
+        {barcodeValues.length > 0 ? (
+          barcodeValues.map((value, index) => {
+            const {width, height} = {
+              width: scaleWidth(2.0),
+              height: scaleHeight(50),
+            };
+
+            return (
+              <View key={index} style={styles.barcodeContainer}>
+                <Barcode
+                  value={value}
+                  format="CODE39"
+                  width={width}
+                  height={height}
+                />
+                <Text style={styles.barcodeText}>{value}</Text>
+              </View>
+            );
+          })
+        ) : (
+          <Text style={styles.emptyText}>No Barcodes Generated</Text>
+        )}
       </ScrollView>
+      {/* Display ShareDownloadComponent if barcode is generated */}
+      {isActive && downloadUrl && (
+        <ShareDownloadComponent downloadUrl={downloadUrl} isActive={true} />
+      )}
     </View>
   );
 };
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -103,34 +140,42 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     padding: moderateScale(20),
   },
-  title: {
-    fontSize: moderateScale(18),
-    fontWeight: 'bold',
-    marginBottom: scaleHeight(20),
-  },
   imagePicker: {
     backgroundColor: '#007bff',
-    padding: moderateScale(10),
+    paddingVertical: moderateScale(12),
+    paddingHorizontal: moderateScale(20),
     borderRadius: moderateScale(5),
     marginBottom: scaleHeight(10),
   },
   imagePickerText: {
     color: colors.white,
-    fontSize: moderateScale(14),
+    fontSize: moderateScale(16),
     textAlign: 'center',
   },
-  image: {
-    width: scaleWidth(150),
-    height: scaleHeight(150),
+  imageList: {
+    marginTop: scaleHeight(10),
+    width: '100%',
+  },
+  imageContainer: {
+    marginRight: scaleWidth(10),
+    width: scaleWidth(100),
+    height: scaleHeight(100),
     borderRadius: moderateScale(10),
-    marginBottom: scaleHeight(10),
+    overflow: 'hidden',
+  },
+  uploadedImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: moderateScale(10),
   },
   input: {
-    height: scaleHeight(40),
-    borderColor: 'gray',
+    height: scaleHeight(50),
+    borderColor: '#ccc',
     borderWidth: 1,
-    marginBottom: scaleHeight(10),
-    paddingHorizontal: moderateScale(10),
+    borderRadius: moderateScale(5),
+    paddingHorizontal: moderateScale(15),
+    marginBottom: scaleHeight(15),
+    fontSize: moderateScale(16),
     width: scaleWidth(250),
   },
   barcodeList: {
@@ -143,10 +188,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f8f8',
     borderRadius: moderateScale(5),
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 3},
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 2,
   },
   barcodeText: {
     marginTop: scaleHeight(5),
     fontSize: moderateScale(14),
+    fontWeight: '600',
+    color: colors.black,
+  },
+  emptyText: {
+    fontSize: moderateScale(18),
+    color: '#888',
+    textAlign: 'center',
   },
 });
 

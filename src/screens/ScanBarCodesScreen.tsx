@@ -17,7 +17,7 @@ import {scaleHeight, scaleWidth} from '../utils/dimensions';
 const ScanBarCodesScreen = () => {
   const navigation = useNavigation();
   const cameraRef = useRef(null);
-  const [scannedData, setScannedData] = useState(null);
+  const [scannedData, setScannedData] = useState('');
   const [showCamera, setShowCamera] = useState(true);
   const [flashMode, setFlashMode] = useState('off');
 
