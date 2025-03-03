@@ -17,7 +17,7 @@ import Share from 'react-native-share';
 import CameraRoll from '@react-native-camera-roll/camera-roll';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {moderateScale, scaleWidth} from '../../utils/dimensions';
-import {colors} from '../../utils/LightTheme';
+import {colors, fontSize} from '../../utils/LightTheme';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Animated, {FadeIn, BounceIn} from 'react-native-reanimated';
 import {contents, useLanguage} from '../../context';
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: moderateScale(21),
+    fontSize: fontSize.textSize21,
     fontWeight: '500',
     textAlign: 'center',
     marginBottom: moderateScale(10),
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   input: {
     height: moderateScale(50),
     flex: 1,
-    fontSize: moderateScale(16),
+    fontSize: fontSize.textSize16,
     paddingLeft: moderateScale(10),
     color: colors.grey800,
   },
@@ -225,11 +225,11 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: moderateScale(18),
+    fontSize: fontSize.textSize18,
   },
   qrContainer: {alignItems: 'center', marginTop: moderateScale(20)},
   qrText: {
-    fontSize: moderateScale(14),
+    fontSize: fontSize.textSize14,
     color: colors.grey800,
     marginTop: moderateScale(10),
   },

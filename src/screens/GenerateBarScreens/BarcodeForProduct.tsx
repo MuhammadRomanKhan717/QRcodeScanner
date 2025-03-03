@@ -15,7 +15,7 @@ import Barcode from 'react-native-barcode-svg'; // Barcode library
 import {launchImageLibrary} from 'react-native-image-picker';
 import FastImage from 'react-native-fast-image';
 import {moderateScale, scaleHeight, scaleWidth} from '../../utils/dimensions';
-import {colors} from '../../utils/LightTheme';
+import {colors, fontSize} from '../../utils/LightTheme';
 import Header from '../../components/commonComponents/Header';
 import ShareDownloadComponent from '../../components/generateQRCodesComponent/ShareDownloadComponent'; // Assuming this component is reusable
 
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   },
   imagePickerText: {
     color: colors.white,
-    fontSize: moderateScale(16),
+    fontSize: fontSize.textSize16,
     textAlign: 'center',
   },
   imageList: {
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(5),
     paddingHorizontal: moderateScale(15),
     marginBottom: scaleHeight(15),
-    fontSize: moderateScale(16),
+    fontSize: fontSize.textSize16,
     width: scaleWidth(250),
   },
   barcodeList: {
@@ -196,12 +196,12 @@ const styles = StyleSheet.create({
   },
   barcodeText: {
     marginTop: scaleHeight(5),
-    fontSize: moderateScale(14),
+    fontSize: fontSize.textSize14,
     fontWeight: '600',
     color: colors.black,
   },
   emptyText: {
-    fontSize: moderateScale(18),
+    fontSize: fontSize.textSize16,
     color: '#888',
     textAlign: 'center',
   },

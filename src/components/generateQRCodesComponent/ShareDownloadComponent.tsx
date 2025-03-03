@@ -11,8 +11,8 @@ import ViewShot from 'react-native-view-shot';
 import Share from 'react-native-share';
 import QRCode from 'react-native-qrcode-svg';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {moderateScale} from '../../utils/dimensions';
-import {colors} from '../../utils/LightTheme';
+import {moderateScale, scaleHeight} from '../../utils/dimensions';
+import {colors, fontSize} from '../../utils/LightTheme';
 import {contents} from '../../context';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import RNFS from 'react-native-fs';
@@ -120,8 +120,8 @@ const styles = {
     alignItems: 'center',
   },
   qrText: {
-    marginTop: moderateScale(10),
-    fontSize: moderateScale(14),
+    marginTop: scaleHeight(10),
+    fontSize: fontSize.textSize14,
     color: colors.grey800,
   },
   button: {
@@ -137,7 +137,7 @@ const styles = {
   },
   buttonText: {
     color: colors.whiteText,
-    fontSize: moderateScale(16),
+    fontSize: fontSize.textSize18,
     fontWeight: 'bold',
     marginLeft: moderateScale(5),
   },

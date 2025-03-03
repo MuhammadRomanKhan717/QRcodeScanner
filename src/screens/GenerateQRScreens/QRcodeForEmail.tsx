@@ -14,7 +14,7 @@ import ViewShot from 'react-native-view-shot';
 import Share from 'react-native-share';
 import RNFS from 'react-native-fs';
 import {moderateScale, scaleHeight} from '../../utils/dimensions';
-import {colors} from '../../utils/LightTheme';
+import {colors, fontSize} from '../../utils/LightTheme';
 import Header from '../../components/commonComponents/Header';
 import {contents} from '../../context';
 import ShareDownloadComponent from '../../components/generateQRCodesComponent/ShareDownloadComponent';
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   heading: {
-    fontSize: moderateScale(20),
+    fontSize: fontSize.textSize20,
     fontWeight: 'bold',
     color: colors.blackText,
     marginBottom: moderateScale(20),
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: colors.whiteText,
-    fontSize: moderateScale(16),
+    fontSize: fontSize.textSize16,
     fontWeight: 'bold',
   },
   qrContainer: {
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
   shareButtonText: {
     color: colors.whiteText,
-    fontSize: moderateScale(16),
+    fontSize: fontSize.textSize16,
     fontWeight: 'bold',
   },
   downloadButton: {
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   },
   downloadButtonText: {
     color: colors.whiteText,
-    fontSize: moderateScale(16),
+    fontSize: fontSize.textSize16,
     fontWeight: 'bold',
   },
 });

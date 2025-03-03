@@ -15,7 +15,7 @@ import Animated, {
 import {moderateScale, scaleHeight, scaleWidth} from '../utils/dimensions';
 import {contents, useLanguage} from '../context';
 import Header from '../components/commonComponents/Header';
-import {colors} from '../utils/LightTheme';
+import {colors, fontSize} from '../utils/LightTheme';
 
 // Define the type for navigation
 type RootStackParamList = {
@@ -361,7 +361,7 @@ const styles = {
     padding: moderateScale(10),
   },
   heading: {
-    fontSize: moderateScale(18),
+    fontSize: fontSize.textSize18,
     fontWeight: 'bold',
     marginBottom: moderateScale(15),
     color: '#333',
@@ -387,7 +387,7 @@ const styles = {
     margin: moderateScale(10),
   },
   text: {
-    fontSize: moderateScale(14),
+    fontSize: fontSize.textSize14,
     fontWeight: '600',
     color: '#4A4A4A',
     textAlign: 'center',

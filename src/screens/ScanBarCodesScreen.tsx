@@ -13,6 +13,7 @@ import Header from '../components/commonComponents/Header';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {scaleHeight, scaleWidth} from '../utils/dimensions';
+import {fontSize} from '../utils/LightTheme';
 
 const ScanBarCodesScreen = () => {
   const navigation = useNavigation();
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
     marginBottom: scaleHeight(10),
   },
   barcodeText: {
-    fontSize: 18,
+    fontSize: fontSize.textSize18,
     fontWeight: 'bold',
     marginBottom: scaleHeight(10),
   },
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontSize: 14,
+    fontSize: fontSize.textSize14,
     marginLeft: 10,
     fontWeight: 'bold',
   },

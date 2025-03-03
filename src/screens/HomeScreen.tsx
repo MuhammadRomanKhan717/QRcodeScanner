@@ -7,7 +7,7 @@ import NavigationCard from '../components/homeComponents/NavigationCard';
 import {moderateScale} from '../utils/dimensions';
 import {contents, useLanguage} from '../context';
 import i18n from '../i18n';
-import {colors} from '../utils/LightTheme';
+import {colors, fontSize} from '../utils/LightTheme';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -112,12 +112,12 @@ const styles = StyleSheet.create({
     padding: moderateScale(10),
   },
   headerTitle: {
-    fontSize: moderateScale(22),
+    fontSize: fontSize.textSize22,
     fontWeight: 'bold',
     color: colors.blackText,
   },
   title: {
-    fontSize: moderateScale(30),
+    fontSize: fontSize.textSize30,
     fontWeight: 'bold',
     marginTop: moderateScale(30),
     marginBottom: moderateScale(30),

@@ -5,6 +5,7 @@ import {Camera, CameraType} from 'react-native-camera-kit';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Header from '../components/commonComponents/Header';
+import {fontSize} from '../utils/LightTheme';
 
 const ScanQRCodesScreen = () => {
   const navigation = useNavigation();
@@ -106,7 +107,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   barcodeText: {
-    fontSize: 18,
+    fontSize: fontSize.textSize18,
     fontWeight: 'bold',
     marginBottom: 15,
     color: '#333',
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: fontSize.textSize16,
     marginLeft: 10,
     fontWeight: 'bold',
   },

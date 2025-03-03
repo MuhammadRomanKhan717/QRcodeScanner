@@ -13,7 +13,7 @@ import {Picker} from '@react-native-picker/picker';
 import Header from '../../components/commonComponents/Header';
 import {moderateScale} from '../../utils/dimensions';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {colors} from '../../utils/LightTheme';
+import {colors, fontSize} from '../../utils/LightTheme';
 import Animated, {FadeIn, BounceIn} from 'react-native-reanimated';
 import {contents} from '../../context';
 import ShareDownloadComponent from '../../components/generateQRCodesComponent/ShareDownloadComponent';
@@ -134,13 +134,13 @@ const styles = StyleSheet.create({
     padding: moderateScale(20),
   },
   title: {
-    fontSize: moderateScale(21),
+    fontSize: fontSize.textSize21,
     fontWeight: '500',
     textAlign: 'center',
     marginBottom: moderateScale(10),
   },
   input: {
-    fontSize: moderateScale(18),
+    fontSize: fontSize.textSize18,
     padding: moderateScale(10),
     borderWidth: 1,
     borderColor: '#999',
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   },
   passwordInput: {
     flex: 1,
-    fontSize: moderateScale(18),
+    fontSize: fontSize.textSize18,
     paddingVertical: moderateScale(10),
   },
   iconContainer: {
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: 'red',
-    fontSize: moderateScale(16),
+    fontSize: fontSize.textSize16,
     marginBottom: moderateScale(10),
     textAlign: 'center',
   },
@@ -185,6 +185,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: moderateScale(18),
+    fontSize: fontSize.textSize18,
   },
 });

@@ -14,7 +14,7 @@ import Share from 'react-native-share';
 import RNFS from 'react-native-fs';
 import CountryPicker from 'react-native-country-picker-modal';
 import {moderateScale} from '../../utils/dimensions';
-import {colors} from '../../utils/LightTheme';
+import {colors, fontSize} from '../../utils/LightTheme';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import Animated, {FadeIn, BounceIn} from 'react-native-reanimated';
 import {contents} from '../../context';
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: moderateScale(21),
+    fontSize: fontSize.textSize21,
     fontWeight: '500',
     textAlign: 'center',
     marginBottom: moderateScale(10),
@@ -152,20 +152,20 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   callingCode: {
-    fontSize: moderateScale(18),
+    fontSize: fontSize.textSize18,
     fontWeight: 'bold',
     color: colors.inputText,
     marginRight: moderateScale(5),
   },
   phoneInput: {
     flex: 1,
-    fontSize: moderateScale(16),
+    fontSize: fontSize.textSize16,
     padding: moderateScale(10),
     color: colors.grey800,
   },
   input: {
     width: '100%',
-    fontSize: moderateScale(18),
+    fontSize: fontSize.textSize18,
     padding: moderateScale(10),
     borderWidth: 1,
     borderColor: colors.grey800,
@@ -181,6 +181,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: moderateScale(18),
+    fontSize: fontSize.textSize18,
   },
 });

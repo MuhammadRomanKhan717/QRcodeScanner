@@ -13,7 +13,8 @@ import MapView, {Marker} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import QRCode from 'react-native-qrcode-svg';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
-import {Header} from 'react-native/Libraries/NewAppScreen';
+import Header from '../../components/commonComponents/Header';
+import {fontSize} from '../../utils/LightTheme';
 
 const QrcodeForMap = () => {
   const navigation = useNavigation();
@@ -141,7 +142,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   header: {
-    fontSize: 20,
+    fontSize: fontSize.textSize20,
     fontWeight: 'bold',
     marginBottom: 10,
   },
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   infoText: {
-    fontSize: 16,
+    fontSize: fontSize.textSize16,
     fontWeight: 'bold',
   },
   qrContainer: {
@@ -170,11 +171,11 @@ const styles = StyleSheet.create({
   },
   qrText: {
     marginTop: 10,
-    fontSize: 14,
+    fontSize: fontSize.textSize14,
     color: '#333',
   },
   loadingText: {
-    fontSize: 16,
+    fontSize: fontSize.textSize16,
     color: 'gray',
     marginTop: 10,
   },

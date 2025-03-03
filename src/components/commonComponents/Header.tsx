@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {fontSize} from '../../utils/LightTheme';
 
 interface HeaderProps {
   title: string;
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
     width: 32, // Ensures alignment when the back button is hidden
   },
   title: {
-    fontSize: 18,
+    fontSize: fontSize.textSize18,
     fontWeight: 'bold',
     flex: 1,
     textAlign: 'center',

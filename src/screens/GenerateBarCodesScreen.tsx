@@ -17,7 +17,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {moderateScale} from '../utils/dimensions';
 import {contents} from '../context';
 import Header from '../components/commonComponents/Header';
-import {colors} from '../utils/LightTheme';
+import {colors, fontSize} from '../utils/LightTheme';
 
 // Navigation type definition
 type RootStackParamList = {
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     padding: moderateScale(10),
   },
   heading: {
-    fontSize: moderateScale(18),
+    fontSize: fontSize.textSize18,
     fontWeight: 'bold',
     marginBottom: moderateScale(15),
     color: '#333',
@@ -111,13 +111,13 @@ const styles = StyleSheet.create({
     margin: moderateScale(10),
   },
   text: {
-    fontSize: moderateScale(14),
+    fontSize: fontSize.textSize14,
     fontWeight: '600',
     color: '#4A4A4A',
     textAlign: 'center',
   },
   title: {
-    fontSize: 18,
+    fontSize: fontSize.textSize18,
     fontWeight: 'bold',
     marginBottom: 20,
   },

@@ -15,6 +15,7 @@ import Share from 'react-native-share';
 import CameraRoll from '@react-native-camera-roll/camera-roll';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {contents} from '../../context';
+import {fontSize} from '../../utils/LightTheme';
 
 const QRCodeForVCard = () => {
   const [firstName, setFirstName] = useState('');
@@ -242,8 +243,8 @@ URL:${website}`;
 
 const styles = StyleSheet.create({
   container: {padding: 20, alignItems: 'center'},
-  heading: {fontSize: 22, fontWeight: 'bold'},
-  subheading: {fontSize: 16, marginBottom: 20, color: '#555'},
+  heading: {fontSize: fontSize.textSize22, fontWeight: 'bold'},
+  subheading: {fontSize: fontSize.textSize16, marginBottom: 20, color: '#555'},
   input: {
     width: '90%',
     padding: 10,

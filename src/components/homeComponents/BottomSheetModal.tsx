@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useLanguage, contents} from '../../context';
 import RNRestart from 'react-native-restart';
 import {ContentLanguage} from '../../i18n';
+import {fontSize} from '../../utils/LightTheme';
 
 const languages = [
   {id: '1', name: 'English', code: ContentLanguage.English},
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   heading: {
-    fontSize: 20,
+    fontSize: fontSize.textSize20,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 10,
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   languageText: {
-    fontSize: 18,
+    fontSize: fontSize.textSize18,
     color: '#333',
   },
   selectedItem: {

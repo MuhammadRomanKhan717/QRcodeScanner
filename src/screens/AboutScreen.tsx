@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import Header from '../components/commonComponents/Header';
 import {useNavigation} from '@react-navigation/native';
-import {colors} from '../utils/LightTheme';
+import {colors, fontSize} from '../utils/LightTheme';
 import {moderateScale, scaleHeight} from '../utils/dimensions';
 
 const AboutScreen = () => {
@@ -82,26 +82,26 @@ const styles = StyleSheet.create({
     padding: moderateScale(20),
   },
   title: {
-    fontSize: moderateScale(22),
+    fontSize: fontSize.textSize22,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: scaleHeight(2),
     color: colors.primary,
   },
   subtitle: {
-    fontSize: moderateScale(20),
+    fontSize: fontSize.textSize20,
     fontWeight: 'bold',
     marginTop: scaleHeight(3),
     color: colors.secondary,
   },
   feature: {
-    fontSize: moderateScale(18),
+    fontSize: fontSize.textSize18,
     fontWeight: 'bold',
     marginTop: scaleHeight(2),
     color: colors.black,
   },
   text: {
-    fontSize: moderateScale(16),
+    fontSize: fontSize.textSize16,
     textAlign: 'left',
     color: colors.black,
     lineHeight: moderateScale(24),
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   footer: {
-    fontSize: moderateScale(16),
+    fontSize: fontSize.textSize16,
     textAlign: 'center',
     marginTop: scaleHeight(5),
     fontWeight: 'bold',

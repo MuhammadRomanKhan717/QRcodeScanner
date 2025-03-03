@@ -1,6 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import {View, Text, StyleSheet, Image, Animated, Easing} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {fontSize} from '../utils/LightTheme';
 
 const SplashScreen = () => {
   const navigation = useNavigation();
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   text: {
-    fontSize: 20,
+    fontSize: fontSize.textSize20,
     fontWeight: 'bold',
     marginTop: 20,
   },
