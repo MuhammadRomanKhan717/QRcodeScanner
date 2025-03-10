@@ -1,54 +1,81 @@
 import React, {useRef, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {StyleSheet, Text, View, Alert, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Alert,
+  TouchableOpacity,
+  Image,
+  Linking,
+} from 'react-native';
 import {Camera, CameraType} from 'react-native-camera-kit';
+import Header from '../components/commonComponents/Header';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Header from '../components/commonComponents/Header';
+import {scaleHeight, scaleWidth} from '../utils/dimensions';
 import {fontSize} from '../utils/LightTheme';
 
 const ScanQRCodesScreen = () => {
   const navigation = useNavigation();
   const cameraRef = useRef(null);
-  const [flashMode, setFlashMode] = useState('off');
   const [scannedData, setScannedData] = useState('');
   const [showCamera, setShowCamera] = useState(true);
+  const [flashMode, setFlashMode] = useState('off');
 
   const handleBarcodeScan = event => {
-    setScannedData({id: event.nativeEvent.codeStringValue});
+    const qrCodeValue = event.nativeEvent.codeStringValue;
+    setScannedData({
+      id: qrCodeValue,
+      image: 'https://via.placeholder.com/150', // Placeholder image
+    });
     setShowCamera(false);
-    Alert.alert('QR Code Found', event.nativeEvent.codeStringValue);
   };
 
   const toggleFlash = () => {
     setFlashMode(prev => (prev === 'on' ? 'off' : 'on'));
   };
 
-  const resetScanner = () => {
-    setScannedData(null);
-    setShowCamera(true);
+  const searchAmazon = () => {
+    const amazonSearchURL = `https://www.amazon.com/s?k=${encodeURIComponent(
+      scannedData.id,
+    )}`;
+    Linking.openURL(amazonSearchURL).catch(err => {
+      console.error('An error occurred while trying to open the URL:', err);
+      Alert.alert('Error', 'Unable to open Amazon.');
+    });
+  };
+
+  const searchGoogle = () => {
+    const googleSearchURL = `https://www.google.com/search?q=${encodeURIComponent(
+      scannedData.id,
+    )}`;
+    Linking.openURL(googleSearchURL).catch(err => {
+      console.error('An error occurred while trying to open the URL:', err);
+      Alert.alert('Error', 'Unable to open Google.');
+    });
   };
 
   return (
     <View style={styles.container}>
-      {/* Properly Positioned Header */}
+      {/* Header Properly Positioned */}
       <View style={styles.headerContainer}>
         <Header title="Scan QR Code" onBackPress={() => navigation.goBack()} />
       </View>
 
-      {/* Camera or QR Code Result */}
+      {/* Camera for QR Scanning */}
       {showCamera ? (
         <View style={styles.cameraContainer}>
           <Camera
             ref={cameraRef}
             cameraType={CameraType.Back}
             flashMode={flashMode}
-            scanBarcode={true}
             onReadCode={handleBarcodeScan}
             showFrame={true}
             laserColor="red"
             frameColor="green"
             style={styles.camera}
+            scanBarcode={true}
           />
           <TouchableOpacity style={styles.flashButton} onPress={toggleFlash}>
             <MaterialCommunityIcons
@@ -59,12 +86,20 @@ const ScanQRCodesScreen = () => {
           </TouchableOpacity>
         </View>
       ) : (
+        /* QR Code Result Screen */
         <View style={styles.resultContainer}>
-          <Text style={styles.barcodeText}>QR Code: {scannedData?.id}</Text>
-          <TouchableOpacity style={styles.button} onPress={resetScanner}>
-            <AntDesign name="scan1" size={24} color="white" />
-            <Text style={styles.buttonText}>Scan Again</Text>
-          </TouchableOpacity>
+          <Image source={{uri: scannedData.image}} style={styles.image} />
+          <Text style={styles.barcodeText}>QR Code: {scannedData.id}</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={searchAmazon}>
+              <AntDesign name="shoppingcart" size={24} color="white" />
+              <Text style={styles.buttonText}>Amazon</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={searchGoogle}>
+              <AntDesign name="google" size={24} color="white" />
+              <Text style={styles.buttonText}>Google</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
     </View>
@@ -82,6 +117,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 15,
     paddingTop: 10,
+    marginBottom: 10, // Ensure space between header and camera
   },
   cameraContainer: {
     flex: 1,
@@ -106,20 +142,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  image: {
+    width: 150,
+    height: 150,
+    marginBottom: scaleHeight(10),
+  },
   barcodeText: {
     fontSize: fontSize.textSize18,
     fontWeight: 'bold',
-    marginBottom: 15,
-    color: '#333',
+    marginBottom: scaleHeight(10),
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginTop: scaleHeight(10),
   },
   button: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#007AFF',
-    width: 180,
-    height: 50,
-    borderRadius: 5,
+    width: scaleWidth(140),
+    height: scaleHeight(50),
+    borderRadius: scaleHeight(5),
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
@@ -129,7 +175,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontSize: fontSize.textSize16,
+    fontSize: fontSize.textSize14,
     marginLeft: 10,
     fontWeight: 'bold',
   },

@@ -286,21 +286,23 @@ const getIconComponent = (iconName: string) => {
   ];
 
   if (iconName === 'dashboard-customize') {
-    return <Icon name="view-dashboard-outline" size={24} color="#4CAF50" />;
+    return (
+      <Icon name="view-dashboard-outline" size={24} color={colors.primary2} />
+    );
   } else if (iconName === 'paypal') {
-    return <FontAwesome name="paypal" size={24} color="#4CAF50" />;
+    return <FontAwesome name="paypal" size={24} color={colors.primary2} />;
   } else if (iconName === 'etsy') {
-    return <FontAwesome name="etsy" size={24} color="#4CAF50" />;
+    return <FontAwesome name="etsy" size={24} color={colors.primary2} />;
   } else if (iconName === 'video') {
-    return <Octicons name="video" size={24} color="#4CAF50" />;
+    return <Octicons name="video" size={24} color={colors.primary2} />;
   } else if (iconName === 'tiktok') {
-    return <MaterialIcons name="tiktok" size={24} color="#4CAF50" />;
+    return <MaterialIcons name="tiktok" size={24} color={colors.primary2} />;
   } else if (iconName === 'qr-code') {
-    return <Icon name="qrcode" size={24} color="#4CAF50" />;
+    return <Icon name="qrcode" size={24} color={colors.primary2} />;
   } else if (fontistoIcons.includes(iconName)) {
-    return <Fontisto name={iconName} size={24} color="#4CAF50" />;
+    return <Fontisto name={iconName} size={24} color={colors.primary2} />;
   } else if (materialIcons.includes(iconName)) {
-    return <Icon name={iconName} size={24} color="#4CAF50" />;
+    return <Icon name={iconName} size={24} color={colors.primary2} />;
   } else {
     console.warn(`Icon "${iconName}" not found!`);
     return <Icon name="help-circle" size={24} color="red" />;
