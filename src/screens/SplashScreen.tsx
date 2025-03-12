@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import {View, Text, StyleSheet, Image, Animated, Easing} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {fontSize} from '../utils/LightTheme';
+import {colors, fontSize} from '../utils/LightTheme';
 
 const SplashScreen = () => {
   const navigation = useNavigation();
@@ -41,7 +41,7 @@ const SplashScreen = () => {
         ]}
       />
       <Animated.Text style={[styles.text, {opacity: scaleAnim}]}>
-        Welcome to Bar And QR Code
+        Welcome
       </Animated.Text>
     </View>
   );
@@ -50,7 +50,7 @@ const SplashScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.splashbackgound,
     justifyContent: 'center',
     alignItems: 'center',
   },

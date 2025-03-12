@@ -3,6 +3,7 @@ import {moderateScale} from './dimensions';
 export const colors = {
   black: '#000000',
   primary2: '#4CAF50',
+  splashbackgound: '#60b263',
   grey800: '#170038',
   grey600: '#8B96A5',
   grey400: '#ACB6BF',
